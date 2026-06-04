@@ -47,18 +47,8 @@ DDSP-Timbre-Transfer/
 # Project - settings (user-specific)
 settings.json
 ratings.csv
+_shared/_ratings.csv
 
-# MIDI banks — keep only empty generated/ on GitHub
-_midi_banks/*
-!_midi_banks/generated/
-_midi_banks/generated/*.mid
-
-# Corrupt presets — keep only defaults on GitHub
-_corrupt_presets/*
-!_corrupt_presets/heavy.json
-!_corrupt_presets/light.json
-!_corrupt_presets/medium.json
-
-# MIDI gen presets — keep directory on GitHub but presets local only
-_midi_gen_presets/*
-!_midi_gen_presets/.gitkeep
+# Project - test artifacts
+quick_test.wav
+*.bak
