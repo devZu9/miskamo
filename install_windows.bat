@@ -36,6 +36,6 @@ if not exist "FluidR3_GM.sf2" (
 echo.
 echo ====================================
 echo  Setup complete!
-echo  Run start_web_ui_gui.bat to launch
+echo  Run start_win_web_ui_gui.bat to launch
 echo ====================================
 pause

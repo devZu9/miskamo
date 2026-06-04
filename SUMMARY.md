@@ -15,8 +15,8 @@
 ```bash
 pip install -r requirements.txt
 pip install -r requirements-test.txt
-start_web_ui_gui.bat   # GPU
-start_web_ui_cpu.bat   # CPU
+start_win_web_ui_gui.bat   # GPU
+start_win_web_ui_cpu.bat   # CPU
 python main.py         # напрямую
 ```
 
@@ -85,8 +85,8 @@ python main.py         # напрямую
 ├── FluidR3_GM.sf2           # SoundFont (148 МБ)
 ├── requirements.txt
 ├── requirements-test.txt
-├── start_web_ui_gui.bat
-├── start_web_ui_cpu.bat
+├── start_win_web_ui_gui.bat
+├── start_win_web_ui_cpu.bat
 ├── settings.json
 ├── ratings.csv
 ```

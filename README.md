@@ -44,16 +44,16 @@ pip install -r requirements-test.txt   # для тестов
 
 ```bash
 # Windows (GPU)
-start_web_ui_gui.bat
+start_win_web_ui_gui.bat
 
 # Windows (CPU)
-start_web_ui_cpu.bat
+start_win_web_ui_cpu.bat
 
 # macOS (GPU)
-bash start_web_ui_gui.sh
+bash start_mac_web_ui_gui.sh
 
 # macOS (CPU)
-bash start_web_ui_cpu.sh
+bash start_mac_web_ui_cpu.sh
 
 # Или напрямую:
 python main.py        # Windows

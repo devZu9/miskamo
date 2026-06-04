@@ -15,12 +15,10 @@ Local personal music assistant. Includes a dataset generator (MIDI → distorted
 ## Commands
 ```bash
 # Run server (GPU)
-start_web_ui_gui.bat
+start_win_web_ui_gui.bat
 
-# Run server (CPU)
-start_web_ui_cpu.bat
+start_win_web_ui_cpu.bat
 
-# Or directly:
 python main.py
 
 # Run tests
@@ -190,7 +188,7 @@ Cancel via `_gen_cancel_flag` flag + dedicated endpoint.
 ## Файлы установки и запуска
 - `install_windows.bat` — Windows: pip install + создание папок
 - `install_macos.sh` — macOS: Homebrew + pip install + создание папок
-- `start_web_ui_gui.bat` / `.sh` — запуск (GPU)
-- `start_web_ui_cpu.bat` / `.sh` — запуск (CPU, CUDA_VISIBLE_DEVICES=-1)
+- `start_win_web_ui_gui.bat` / `start_mac_web_ui_gui.sh` — запуск (GPU)
+- `start_win_web_ui_cpu.bat` / `start_mac_web_ui_cpu.sh` — запуск (CPU, CUDA_VISIBLE_DEVICES=-1)
 - `.sh` файлы имеют `+x` (chmod) — исполняемые
 

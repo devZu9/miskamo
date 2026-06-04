@@ -40,5 +40,5 @@ fi
 echo ""
 echo "===================================="
 echo "  Setup complete!"
-echo "  Run start_web_ui_cpu.sh to launch"
+echo "  Run start_mac_web_ui_cpu.sh to launch"
 echo "===================================="

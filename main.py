@@ -297,7 +297,7 @@ async def api_file(name: str, dl: str = None):
 # ─── API: MIDI piano roll image ────────────────────────────────────
 
 @app.get("/api/midi/pianoroll")
-async def api_midi_pianoroll(file: str = "", pitch_low: int = Query(None), pitch_high: int = Query(None), total_bars: int = Query(None), note_offset: int = Query(0)):
+async def api_midi_pianoroll(file: str = "", pitch_low: int = Query(None), pitch_high: int = Query(None), total_bars: int = Query(None), note_offset: int = Query(0), highlight_even_bars: bool = Query(False)):
     if not file:
         return JSONResponse({"error": "missing file param"}, status_code=400)
     fpath = OUTPUT_DIR / file
@@ -305,7 +305,7 @@ async def api_midi_pianoroll(file: str = "", pitch_low: int = Query(None), pitch
         return JSONResponse({"error": "not found"}, status_code=404)
     try:
         loop = asyncio.get_event_loop()
-        buf = await loop.run_in_executor(None, partial(_render_pianoroll, pitch_low=pitch_low, pitch_high=pitch_high, total_bars=total_bars, note_offset=note_offset), fpath)
+        buf = await loop.run_in_executor(None, partial(_render_pianoroll, pitch_low=pitch_low, pitch_high=pitch_high, total_bars=total_bars, note_offset=note_offset, highlight_even_bars=highlight_even_bars), fpath)
         return StreamingResponse(buf, media_type="image/png")
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
