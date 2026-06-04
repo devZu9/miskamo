@@ -43,3 +43,9 @@ ratings.csv
 _midi_banks/*
 !_midi_banks/generated/
 _midi_banks/generated/*.mid
+
+# Corrupt presets — keep only defaults on GitHub
+_corrupt_presets/*
+!_corrupt_presets/heavy.json
+!_corrupt_presets/light.json
+!_corrupt_presets/medium.json
