@@ -50,5 +50,6 @@ _corrupt_presets/*
 !_corrupt_presets/light.json
 !_corrupt_presets/medium.json
 
-# MIDI gen presets — local only
-_midi_gen_presets/
+# MIDI gen presets — keep directory on GitHub but presets local only
+_midi_gen_presets/*
+!_midi_gen_presets/.gitkeep
