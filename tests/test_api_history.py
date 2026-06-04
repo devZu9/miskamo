@@ -23,7 +23,7 @@ def test_history_with_files(client, seed_midi, seed_wav):
 
 def test_history_pagination(client):
     # Create 30 entries (60 files)
-    import main as m
+    import core.config as cfg
     import pretty_midi
     import soundfile as sf
     import numpy as np
@@ -34,8 +34,8 @@ def test_history_pagination(client):
         inst = pretty_midi.Instrument(program=0)
         inst.notes.append(pretty_midi.Note(80, 60, 0, 0.5))
         midi.instruments.append(inst)
-        midi.write(str(m.OUTPUT_DIR / f"{uid}.mid"))
-        sf.write(str(m.OUTPUT_DIR / f"{uid}.wav"),
+        midi.write(str(cfg.OUTPUT_DIR / f"{uid}.mid"))
+        sf.write(str(cfg.OUTPUT_DIR / f"{uid}.wav"),
                  np.zeros(44100, np.float32), 44100)
 
     r1 = client.get("/api/history?limit=10&offset=0")
@@ -61,8 +61,8 @@ def test_history_delete(client, seed_midi, seed_wav):
     assert r2.status_code == 200
     assert r2.json()["ok"] is True
     # Verify deleted
-    import main as m
-    remaining = [f.name for f in m.OUTPUT_DIR.iterdir() if f.is_file() and f.name.startswith(uid)]
+    import core.config as cfg
+    remaining = [f.name for f in cfg.OUTPUT_DIR.iterdir() if f.is_file() and f.name.startswith(uid)]
     assert len(remaining) == 0
 
 
@@ -71,8 +71,8 @@ def test_history_clear(client, seed_midi, seed_wav):
     assert r.status_code == 200
     assert r.json()["ok"] is True
     # Verify cleared
-    import main as m
-    assert len(list(m.OUTPUT_DIR.iterdir())) == 0
+    import core.config as cfg
+    assert len(list(cfg.OUTPUT_DIR.iterdir())) == 0
 
 
 def test_history_delete_nonexistent(client):

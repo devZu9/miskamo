@@ -46,7 +46,6 @@ def test_generate_with_bank(client, seed_bank):
         payload = json.loads(result_line[len("result:"):])
         if payload.get("ok"):
             assert payload["count"] >= 1
-            import main as m
             from pathlib import Path
             out_dir = Path(payload["path"])
             clean_files = list(out_dir.glob("*_clean.wav"))
@@ -56,7 +55,6 @@ def test_generate_with_bank(client, seed_bank):
 def test_cancel_generation(client, seed_bank):
     import threading
     import time
-    import main as m
 
     # Start generation in a thread
     result_holder = []
@@ -109,7 +107,6 @@ def test_params_json_created(client, seed_bank):
         payload = json.loads(result_line[len("result:"):])
         if payload.get("ok"):
             import json as j
-            import main as m
             from pathlib import Path
             params_path = Path(payload["path"]) / "_params.json"
             assert params_path.exists()
@@ -120,8 +117,8 @@ def test_params_json_created(client, seed_bank):
 def test_generate_respects_max_300_files(client, seed_bank):
     # Add 5 more MIDI files to testbank
     import pretty_midi
-    import main as m
-    bank = m.MIDI_BANKS / "testbank"
+    import core.config as cfg
+    bank = cfg.MIDI_BANKS / "testbank"
     for i in range(5):
         pm = pretty_midi.PrettyMIDI(initial_tempo=120)
         inst = pretty_midi.Instrument(program=0)

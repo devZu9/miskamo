@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-LANG_DIR = Path(__file__).resolve().parent.parent / "lang"
+LANG_DIR = Path(__file__).resolve().parent.parent / "core" / "lang"
 
 
 def _load_lang(code):

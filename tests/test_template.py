@@ -6,11 +6,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE = ROOT / "templates" / "index.html"
-STATIC_DIR = ROOT / "static"
-LANG_DIR = ROOT / "lang"
+STATIC_DIR = ROOT / "core" / "static"
+LANG_DIR = ROOT / "core" / "lang"
 
-# JS files that use T()
-JS_FILES = sorted(STATIC_DIR.glob("tab-*.js"))
+# JS files that use T() — search in modules and core static
+JS_FILES = sorted(ROOT.glob("modules/*/static/tab-*.js")) + sorted(STATIC_DIR.glob("tab-*.js"))
 
 
 def _T_keys():

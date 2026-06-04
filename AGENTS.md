@@ -43,70 +43,64 @@ Server runs on **http://127.0.0.1:7890**
 
 ## Project Structure
 ```
-├── main.py                 # FastAPI server (all endpoints)
-├── core/audio2midi.py       # MiskamoEngine (CREPE → DDSP → MIDI)
-├── core/
-│   ├── config.py           # Paths, settings_cache, save/load
-│   ├── i18n.py             # Server-side T() with mtime auto-reload
-│   ├── fluidsynth.py       # _get_synth(), _render_midi(), _notes_to_audio()
-│   ├── midi.py             # _truncate_notes(), _split_into_segments(), _render_pianoroll()
-│   ├── midi_gen.py         # generate() with 5 algorithms
-│   ├── history.py          # _history_list(), _uid_from_name()
-│   └── utils.py            # _ensure_wav(), _transliterate()
+├── main.py                 # FastAPI server (entry point)
+├── core/                   # Framework + shared utilities
+│   ├── app.py             # create_app() factory
+│   ├── module_base.py     # ModuleMeta dataclass
+│   ├── module_loader.py   # scans modules/
+│   ├── settings_hub.py    # /api/core/settings
+│   ├── config.py          # Paths, settings_cache
+│   ├── fluidsynth.py      # SHARED: MIDI→WAV
+│   ├── midi.py            # SHARED: _truncate_notes, _render_pianoroll, etc.  
+│   ├── utils.py           # SHARED: _ensure_wav, _transliterate
+│   ├── i18n.py            # T() with mtime auto-reload
+│   ├── static/
+│   │   ├── framework.js   # T(), toast(), TabManager
+│   │   ├── framework.css  # CSS variables, card, btn
+│   │   └── favicon.svg
+│   └── templates/
+│       └── base.html      # Shell template (module tabs rendered by JS)
+├── modules/                # Independent modules (remove folder = remove module)
+│   ├── audio_to_midi/     # Module: Audio→MIDI
+│   │   ├── __init__.py    # ModuleMeta(id='audio-to-midi')
+│   │   ├── audio2midi.py  # MiskamoEngine
+│   │   └── tab-audio-to-midi.js
+│   ├── midigen/           # Module: MIDI Generator
+│   │   ├── __init__.py
+│   │   ├── midi_gen.py    # 5 algorithms
+│   │   └── tab-midigen.js
+│   ├── dataset/           # Module: Dataset Generator
+│   │   ├── __init__.py
+│   │   └── tab-dataset.js
+│   ├── history/           # Module: History
+│   │   ├── __init__.py
+│   │   ├── history.py     # _history_list, _uid_from_name
+│   │   └── tab-history.js
+│   ├── testing/           # Module: Tests UI
+│   │   ├── __init__.py
+│   │   └── tab-tests.js
+│   └── train/             # Module: Train (stub)
+│       ├── __init__.py
+│       └── tab-train.js
 ├── templates/
-│   └── index.html          # Single-page UI (~725 lines)
+│   └── index.html         # Legacy template (JS refs → modules/)
 ├── static/
-│   ├── tab-*.js            # Per-tab JS (audio-to-midi, midigen, dataset, etc.)
-│   └── favicon.svg
+│   └── tab-settings.js    # Framework settings (not a module)
 ├── lang/
-│   ├── ru.json             # Russian translations (203 keys)
-│   └── en.json             # English translations (203 keys)
-├── tests/
-│   ├── conftest.py         # Module-level mocks + autouse fixtures
-│   ├── test_*.py           # 14 test files, 146 tests
-│   └── README.md
-├── _tmp/                   # Input audio temp storage
-├── _output/                # Generated WAV/MIDI
-├── _midi_banks/            # MIDI file banks
-├── _midi_gen_presets/      # MIDI gen presets (JSON)
-├── _corrupt_presets/       # Dataset distortion presets (JSON)
-└── FluidR3_GM.sf2          # SoundFont (148 MB)
-```
-
-## Port
-Server runs on **http://127.0.0.1:7890**
-
-## Project Structure
-```
-├── main.py                 # FastAPI server (all endpoints)
-├── core/audio2midi.py       # MiskamoEngine (CREPE → DDSP → MIDI)
-├── core/
-│   ├── config.py           # Paths, settings_cache, save/load
-│   ├── i18n.py             # Server-side T() with mtime auto-reload
-│   ├── fluidsynth.py       # _get_synth(), _render_midi(), _notes_to_audio()
-│   ├── midi.py             # _truncate_notes(), _split_into_segments(), _render_pianoroll()
-│   ├── midi_gen.py         # generate() with 5 algorithms
-│   ├── history.py          # _history_list(), _uid_from_name()
-│   └── utils.py            # _ensure_wav(), _transliterate()
-├── templates/
-│   └── index.html          # Single-page UI (~725 lines)
-├── static/
-│   ├── tab-*.js            # Per-tab JS (audio-to-midi, midigen, dataset, etc.)
-│   └── favicon.svg
-├── lang/
-│   ├── ru.json             # Russian translations (188 keys)
-│   └── en.json             # English translations (188 keys)
-├── tests/
-│   ├── conftest.py         # Module-level mocks + autouse fixtures
-│   ├── test_*.py           # 14 test files, 146 tests
-│   └── README.md
-├── _tmp/                   # Input audio temp storage
-├── _output/                # Generated WAV/MIDI
-├── _midi_banks/            # MIDI file banks
-├── _midi_gen_presets/      # MIDI gen presets (JSON)
-├── _corrupt_presets/       # Dataset distortion presets (JSON)
-└── FluidR3_GM.sf2          # SoundFont (148 MB)
-```
+│   ├── ru.json
+│   └── en.json
+├── _shared/               # Content dirs (_ prefix = interaction dirs)
+│   ├── _output/
+│   ├── _tmp/
+│   ├── _midi_banks/
+│   ├── _midi_gen_presets/
+│   ├── _corrupt_presets/
+│   ├── _dataset/
+│   └── _train_output/
+├── tests/                 # Unit tests (dev tool, not a module)
+├── tests_e2e/             # E2E Playwright tests
+├── DDSP-Timbre-Transfer/  # Git submodule
+└── FluidR3_GM.sf2         # SoundFont (148 MB)
 
 ## Architecture & Key Conventions
 
@@ -156,6 +150,11 @@ Cancel via `_gen_cancel_flag` flag + dedicated endpoint.
 - Preset filenames use transliteration (Cyrillic → Latin)
 - Noise formula: `noise_std = (noise / 100.0) * 0.00254`
 - **НИКОГДА не удалять SUMMARY.md** — только дополнять или редактировать. В нём вся история проекта.
+
+## Module initialization convention
+Каждый модуль при первом импорте (`__init__.py`) создаёт необходимые ему директории и файлы с проверкой `exist_ok=True`: если папка/файл уже существует — использует как есть, если нет — создаёт. Модуль **никогда не перезаписывает и не удаляет** чужие данные.
+- **Framework** (`core/config.py`) создаёт только свои директории: `_output`, `_tmp`, `_midi_banks`
+- **Модули** создают свои: `dataset` → `_dataset`, `_corrupt_presets`; `train` → `_train_output`; `midigen` → `_midi_gen_presets`
 
 ## Pitch Offsets (MIDI Generation & Piano Roll)
 

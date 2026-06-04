@@ -126,7 +126,7 @@ def server():
     }), encoding="utf-8")
 
     for sub in ("_output", "_tmp", "_midi_banks", "_corrupt_presets",
-                "_midi_gen_presets", "dataset", "train_output"):
+                "_midi_gen_presets", "_dataset", "_train_output"):
         (tmp / sub).mkdir(parents=True, exist_ok=True)
 
     import core.config
@@ -141,8 +141,8 @@ def server():
     core.config.MIDI_BANKS = tmp / "_midi_banks"
     core.config.CORRUPT_PRESETS_DIR = tmp / "_corrupt_presets"
     core.config.MIDI_GEN_PRESETS_DIR = tmp / "_midi_gen_presets"
-    core.config.DATASET_DIR = tmp / "dataset"
-    core.config.TRAIN_DIR = tmp / "train_output"
+    core.config.DATASET_DIR = tmp / "_dataset"
+    core.config.TRAIN_DIR = tmp / "_train_output"
     core.config.SETTINGS_FILE = tmp / "settings.json"
 
     import main as m

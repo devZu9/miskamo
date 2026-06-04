@@ -37,58 +37,60 @@ python main.py         # напрямую
 ## Структура проекта
 
 ```
-├── main.py                 # FastAPI-сервер (все эндпоинты)
-├── core/audio2midi.py       # MiskamoEngine (CREPE → DDSP → MIDI)
-│
-├── core/
-│   ├── config.py           # Пути, settings_cache, save/load
-│   ├── i18n.py             # T() с авто-перезагрузкой
-│   ├── fluidsynth.py       # _get_synth(), _render_midi(), _notes_to_audio()
-│   ├── midi.py             # _truncate_notes(), _split_into_segments(), _render_pianoroll()
-│   ├── midi_gen.py         # generate() с 5 алгоритмами
-│   ├── history.py          # _history_list(), _uid_from_name()
-│   └── utils.py            # _ensure_wav(), _transliterate()
-│
-├── templates/
-│   └── index.html          # Single-page UI (~1080 строк)
-│
-├── static/
-│   ├── tab-audio-to-midi.js # Вкладка аудио→MIDI
-│   ├── tab-dataset.js       # Вкладка датасета
-│   ├── tab-history.js       # Вкладка истории
-│   ├── tab-midigen.js       # Вкладка MIDI-генерации
-│   ├── tab-settings.js      # Вкладка настроек
-│   ├── tab-tests.js         # Вкладка тестов
-│   └── tab-train.js         # Вкладка обучения (заглушка)
-│
-├── lang/
-│   ├── ru.json              # 203 ключа (русский)
-│   └── en.json              # 203 ключа (английский)
-│
-├── tests/
-│   ├── conftest.py          # Моки + patch_paths autouse
-│   └── test_*.py            # 14 файлов, 146 тестов
-│
-├── tests_e2e/
-│   ├── conftest.py          # E2E моки + uvicorn-сервер
-│   ├── test_cursor_e2e.py   # 30 тестов курсора
-│   └── test_midigen_tsig_e2e.py # 3 теста time signature
-│
-├── _tmp/                    # Временные файлы
-├── _output/                 # Сгенерированные WAV/MIDI
-├── _midi_banks/             # MIDI-банки (maestro ~2000 MIDI)
-├── _midi_gen_presets/       # Пресеты MIDI-генератора (JSON)
-├── _corrupt_presets/        # Пресеты искажений датасета (JSON)
-├── dataset/                 # Сгенерированные датасеты
-├── train_output/            # Результаты обучения
-├── DDSP-Timbre-Transfer/    # Подмодуль DDSP
-├── FluidR3_GM.sf2           # SoundFont (148 МБ)
-├── requirements.txt
-├── requirements-test.txt
-├── start_win_web_ui_gui.bat
-├── start_win_web_ui_cpu.bat
-├── settings.json
-├── ratings.csv
+├── main.py                 # FastAPI-сервер (точка входа)
+├── core/                   # Фреймворк + разделяемые утилиты
+│   ├── app.py             # create_app() фабрика
+│   ├── module_base.py     # ModuleMeta dataclass
+│   ├── module_loader.py   # сканирует modules/
+│   ├── settings_hub.py    # /api/core/settings
+│   ├── i18n.py            # T() с авто-перезагрузкой
+│   ├── config.py          # Пути, settings_cache
+│   ├── fluidsynth.py      # ОБЩИЙ: MIDI→WAV
+│   ├── midi.py            # ОБЩИЙ: утилиты MIDI
+│   ├── utils.py           # ОБЩИЙ: _ensure_wav и др.
+│   ├── static/
+│   │   ├── framework.js   # T(), toast(), TabManager
+│   │   ├── framework.css  # CSS-переменные, карточки
+│   │   └── favicon.svg
+│   └── templates/
+│       └── base.html      # Шаблон-обёртка
+├── modules/                # Независимые модули
+│   ├── audio_to_midi/     # Модуль «Аудио→MIDI»
+│   │   ├── __init__.py    # ModuleMeta(id='audio-to-midi')
+│   │   ├── audio2midi.py  # MiskamoEngine
+│   │   └── tab-audio-to-midi.js
+│   ├── midigen/           # Модуль MIDI генератора
+│   │   ├── __init__.py
+│   │   ├── midi_gen.py    # 5 алгоритмов
+│   │   └── tab-midigen.js
+│   ├── dataset/           # Модуль датасета
+│   │   ├── __init__.py
+│   │   └── tab-dataset.js
+│   ├── history/           # Модуль истории
+│   │   ├── __init__.py
+│   │   ├── history.py     # _history_list, _uid_from_name
+│   │   └── tab-history.js
+│   ├── testing/           # UI тестов (≠ tests/ в корне)
+│   │   ├── __init__.py
+│   │   └── tab-tests.js
+│   └── train/             # Заглушка
+│       ├── __init__.py
+│       └── tab-train.js
+├── lang/                  # i18n-ключи framework
+│   ├── ru.json
+│   └── en.json
+├── _shared/               # Контент-директории (префикс _)
+│   ├── _output/
+│   ├── _tmp/
+│   ├── _midi_banks/
+│   ├── _midi_gen_presets/
+│   ├── _corrupt_presets/
+│   ├── _dataset/
+│   └── _train_output/
+├── tests/                 # Unit-тесты
+├── tests_e2e/             # E2E-тесты Playwright
+├── DDSP-Timbre-Transfer/  # Git-подмодуль
+├── FluidR3_GM.sf2         # SoundFont (148 МБ)
 ```
 
 ## Вкладки

@@ -24,7 +24,8 @@ Thumbs.db
 .DS_Store
 
 # Project - large binary files
-FluidR3_GM.sf2
+libs/FluidR3_GM.sf2
+libs/*.dll
 
 # Windows native libs (pyfluidsynth deps) — install via install_windows.bat or Homebrew on Mac
 *.dll
@@ -32,8 +33,13 @@ FluidR3_GM.sf2
 # Project - generated directories
 _tmp/
 _output/
-dataset/
-train_output/
+_shared/_dataset/
+_shared/_train_output/
+_shared/_output/
+_shared/_tmp/
+_shared/_midi_banks/
+_shared/_corrupt_presets/
+_shared/_midi_gen_presets/
 
 # Project - submodules
 DDSP-Timbre-Transfer/

@@ -27,14 +27,15 @@ pip3 install torch torchaudio
 pip3 install -r requirements.txt
 pip3 install -r requirements-test.txt
 
-echo "[3/4] Creating directories..."
-mkdir -p _tmp _output dataset train_output
-mkdir -p _midi_banks/generated
+echo "[3/4] Creating shared directories..."
+mkdir -p _shared/_tmp _shared/_output
+mkdir -p libs
 
 echo "[4/4] Checking SoundFont..."
-if [ ! -f "FluidR3_GM.sf2" ]; then
+if [ ! -f "libs/FluidR3_GM.sf2" ]; then
     echo "[WARN] FluidR3_GM.sf2 not found."
-    echo "Download it and place in the project root."
+    echo "Download from: https://member.keymusician.com/Member/FluidR3_GM/FluidR3_GM.sf2"
+    echo "Place in libs/FluidR3_GM.sf2"
 fi
 
 echo ""

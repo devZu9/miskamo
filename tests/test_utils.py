@@ -1,7 +1,7 @@
 """Test utility functions: _transliterate, _uid_from_name, _parse_ts, _ensure_wav."""
 
-from core.history import _uid_from_name, _parse_ts
-from main import _transliterate
+from modules.history.history import _uid_from_name, _parse_ts
+from core.utils import _transliterate
 
 
 def test_transliterate_cyrillic():

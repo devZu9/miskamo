@@ -4,25 +4,23 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+SHARED = ROOT / "_shared"
 
-SETTINGS_FILE = ROOT / "settings.json"
-RATINGS_FILE  = ROOT / "ratings.csv"
-DATASET_DIR   = ROOT / "dataset"
-TRAIN_DIR     = ROOT / "train_output"
-MIDI_BANKS    = ROOT / "_midi_banks"
-SOUNDFONT     = ROOT / "FluidR3_GM.sf2"
-OUTPUT_DIR    = ROOT / "_output"
-TMP_DIR       = ROOT / "_tmp"
+SETTINGS_FILE = ROOT / "core" / "settings.json"
+RATINGS_FILE  = SHARED / "_ratings.csv"
+DATASET_DIR   = SHARED / "_dataset"
+TRAIN_DIR     = SHARED / "_train_output"
+MIDI_BANKS    = SHARED / "_midi_banks"
+LIBS_DIR       = ROOT / "libs"
+SOUNDFONT     = LIBS_DIR / "FluidR3_GM.sf2"
+OUTPUT_DIR    = SHARED / "_output"
+TMP_DIR       = SHARED / "_tmp"
 PRESETS_FILE  = ROOT / "presets.json"
-CORRUPT_PRESETS_DIR = ROOT / "_corrupt_presets"
-MIDI_GEN_PRESETS_DIR = ROOT / "_midi_gen_presets"
+CORRUPT_PRESETS_DIR = SHARED / "_corrupt_presets"
+MIDI_GEN_PRESETS_DIR = SHARED / "_midi_gen_presets"
 
-DATASET_DIR.mkdir(exist_ok=True)
-TRAIN_DIR.mkdir(exist_ok=True)
+# Framework dirs — created here; module dirs are created by their __init__.py
 OUTPUT_DIR.mkdir(exist_ok=True)
-CORRUPT_PRESETS_DIR.mkdir(exist_ok=True)
-MIDI_GEN_PRESETS_DIR.mkdir(exist_ok=True)
-
 TMP_DIR.mkdir(exist_ok=True)
 _clear_tmp = True
 if SETTINGS_FILE.exists():

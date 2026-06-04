@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from . import config
 
-_lang_dir = Path(__file__).resolve().parent.parent / "lang"
+_lang_dir = Path(__file__).resolve().parent / "lang"
 _L10N = {}
 _last_mtime = {}
 

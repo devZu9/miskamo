@@ -45,9 +45,9 @@ def test_seed_determinism(client):
     assert r1.json()["ok"] is True
     assert r2.json()["ok"] is True
     # Same seed → same MIDI content
-    import main as m
-    f1 = m.OUTPUT_DIR / r1.json()["filename"]
-    f2 = m.OUTPUT_DIR / r2.json()["filename"]
+    import core.config as cfg
+    f1 = cfg.OUTPUT_DIR / r1.json()["filename"]
+    f2 = cfg.OUTPUT_DIR / r2.json()["filename"]
     assert f1.read_bytes() == f2.read_bytes()
 
 
@@ -58,9 +58,9 @@ def test_different_seeds_different_output(client):
     p2 = dict(params_template, _seed=200)
     r1 = client.post("/api/midi_gen/generate", data={"params": json.dumps(p1)})
     r2 = client.post("/api/midi_gen/generate", data={"params": json.dumps(p2)})
-    import main as m
-    f1 = m.OUTPUT_DIR / r1.json()["filename"]
-    f2 = m.OUTPUT_DIR / r2.json()["filename"]
+    import core.config as cfg
+    f1 = cfg.OUTPUT_DIR / r1.json()["filename"]
+    f2 = cfg.OUTPUT_DIR / r2.json()["filename"]
     assert f1.read_bytes() != f2.read_bytes()
 
 
@@ -125,8 +125,8 @@ def test_save_to_bank(client):
     data = r.json()
     assert data["ok"] is True
     assert data["bank"] == "test_bank"
-    import main as m
-    bank_dir = m.MIDI_BANKS / "test_bank"
+    import core.config as cfg
+    bank_dir = cfg.MIDI_BANKS / "test_bank"
     assert bank_dir.exists()
     assert len(list(bank_dir.iterdir())) >= 1
 

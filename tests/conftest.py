@@ -46,8 +46,9 @@ import shutil
 
 import main as m  # noqa: E402
 import core.config as cfg  # noqa: E402
-import core.history as hist  # noqa: E402
+import modules.history.history as hist  # noqa: E402
 import core.midi as midi_mod  # noqa: E402
+import core.utils as utils_mod  # noqa: E402
 
 
 @pytest.fixture
@@ -93,16 +94,10 @@ def patch_paths(monkeypatch):
         monkeypatch.setattr(cfg, name, p)
     monkeypatch.setattr(cfg, "SETTINGS_FILE", tmp_settings)
 
-    # Patch main module refs (imported as local names)
-    monkeypatch.setattr(m, "ROOT", tmp)
-    monkeypatch.setattr(m, "OUTPUT_DIR", paths["OUTPUT_DIR"])
-    monkeypatch.setattr(m, "TMP_DIR", paths["TMP_DIR"])
-    monkeypatch.setattr(m, "MIDI_BANKS", paths["MIDI_BANKS"])
-    monkeypatch.setattr(m, "CORRUPT_PRESETS_DIR", paths["CORRUPT_PRESETS_DIR"])
-    monkeypatch.setattr(m, "_MIDI_GEN_PRESETS_DIR", paths["MIDI_GEN_PRESETS_DIR"])
-
-    # Patch history module ref
+    # Patch history and utils modules
     monkeypatch.setattr(hist, "OUTPUT_DIR", paths["OUTPUT_DIR"])
+
+    # Update settings cache
 
     # Update settings cache
     cfg.settings_cache.clear()
@@ -123,7 +118,7 @@ def seed_midi():
     for i in range(8):
         inst.notes.append(pretty_midi.Note(80, 60 + i, i * 0.5, i * 0.5 + 0.4))
     pm.instruments.append(inst)
-    fpath = m.OUTPUT_DIR / "test_0001.mid"
+    fpath = cfg.OUTPUT_DIR / "test_0001.mid"
     pm.write(str(fpath))
     return fpath
 
@@ -132,7 +127,7 @@ def seed_midi():
 def seed_wav():
     """Create a minimal test WAV in OUTPUT_DIR, return filename."""
     import soundfile as sf
-    fpath = m.OUTPUT_DIR / "test_0001.wav"
+    fpath = cfg.OUTPUT_DIR / "test_0001.wav"
     sr = 44100
     sf.write(str(fpath), np.zeros(sr, np.float32), sr)
     return fpath
@@ -142,7 +137,7 @@ def seed_wav():
 def seed_bank():
     """Create a minimal MIDI bank dir with one test MIDI."""
     import pretty_midi
-    bank = m.MIDI_BANKS / "testbank"
+    bank = cfg.MIDI_BANKS / "testbank"
     bank.mkdir(exist_ok=True)
     pm = pretty_midi.PrettyMIDI(initial_tempo=120)
     inst = pretty_midi.Instrument(program=0)

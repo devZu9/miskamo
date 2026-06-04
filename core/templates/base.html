@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Miskam'o</title>
+<link rel="icon" type="image/svg+xml" href="/static/core/favicon.svg">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="/static/core/framework.css">
+<style>
+.nav-tabs{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:1rem;padding:.5rem;background:var(--card);border-radius:10px;border:1px solid var(--border)}
+.nav-tab{padding:.4rem 1rem;border-radius:6px;cursor:pointer;font-size:.85rem;color:var(--muted);transition:all .2s;background:transparent;border:1px solid transparent}
+.nav-tab:hover{color:var(--text);background:var(--input)}
+.nav-tab.active{color:#fff;background:var(--accent);border-color:var(--accent)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+#mg-preview-card{min-height:600px}
+</style>
+</head>
+<body>
+<div class="nav-tabs" id="tab-nav"></div>
+<div id="tab-container"></div>
+<script>var _T = {}; var _MODULES = {{ modules_json|safe }};</script>
+{% for m in modules %}{% for js in m.js_files %}
+<script src="/modules/{{ m.module_dir }}/static/{{ js }}"></script>
+{% endfor %}{% endfor %}
+<script src="/static/core/framework.js"></script>
+<script>
+(function(){
+  var nav = document.getElementById('tab-nav');
+  _MODULES.forEach(function(m) {
+    var el = document.createElement('div');
+    el.className = 'nav-tab';
+    el.dataset.tab = m.id;
+    el.textContent = _T[m.tab_key] || m.tab_key;
+    el.onclick = function(){ switchTab(m.id); };
+    nav.appendChild(el);
+    var tc = document.createElement('div');
+    tc.className = 'tab-content';
+    tc.id = 'tab-' + m.id;
+    document.getElementById('tab-container').appendChild(tc);
+  });
+  var lt = localStorage.getItem('last_tab') || (document.querySelector('.nav-tab') ? document.querySelector('.nav-tab').dataset.tab : null);
+  if (lt) switchTab(lt);
+})();
+</script>
+</body>
+</html>
