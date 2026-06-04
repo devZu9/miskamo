@@ -181,3 +181,8 @@ Cancel via `_gen_cancel_flag` flag + dedicated endpoint.
 Чекбокс в Настройках → «Смещение MIDI для Ableton (C3 = Pitch 60)». Сохраняется в `settings.json` как `ableton: bool`.
 При переключении — тост «Ableton смещение ВКЛ» (зелёный) / «Ableton смещение ВЫКЛ» (красный).
 
+## GitHub — что на репозитории, что локально
+- `_midi_banks/` — на GitHub только пустая `generated/.gitkeep`; все банки (maestro, testbank и т.д.) — локально
+- `_corrupt_presets/` — на GitHub только `heavy.json`, `light.json`, `medium.json`; пользовательские и тестовые — локально
+- `_midi_gen_presets/` — полностью локально, на GitHub не попадает
+

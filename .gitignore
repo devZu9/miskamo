@@ -49,3 +49,6 @@ _corrupt_presets/*
 !_corrupt_presets/heavy.json
 !_corrupt_presets/light.json
 !_corrupt_presets/medium.json
+
+# MIDI gen presets — local only
+_midi_gen_presets/
