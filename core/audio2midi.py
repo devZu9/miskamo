@@ -1,10 +1,8 @@
 """
-Miskam'o — голос → инструмент (DDSP) → MIDI
-(одна из опций личного музыкального помощника)
+core/audio2midi.py — голос → инструмент (DDSP) → MIDI
 
-Usage:
-  python miskamo.py input.wav --instrument sax --output_audio out.wav --output_midi out.mid
-  python miskamo.py input.wav --instrument sax --output_midi out.mid
+CLI:
+  python -c "from core.audio2midi import MiskamoEngine; ..."
 """
 
 import argparse, sys

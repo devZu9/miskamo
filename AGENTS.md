@@ -36,7 +36,7 @@ Server runs on **http://127.0.0.1:7890**
 ## Project Structure
 ```
 ├── main.py                 # FastAPI server (all endpoints)
-├── miskamo.py              # MiskamoEngine (CREPE → DDSP → MIDI)
+├── core/audio2midi.py       # MiskamoEngine (CREPE → DDSP → MIDI)
 ├── core/
 │   ├── config.py           # Paths, settings_cache, save/load
 │   ├── i18n.py             # Server-side T() with mtime auto-reload
@@ -71,7 +71,7 @@ Server runs on **http://127.0.0.1:7890**
 ## Project Structure
 ```
 ├── main.py                 # FastAPI server (all endpoints)
-├── miskamo.py             # MiskamoEngine (CREPE → DDSP → MIDI)
+├── core/audio2midi.py       # MiskamoEngine (CREPE → DDSP → MIDI)
 ├── core/
 │   ├── config.py           # Paths, settings_cache, save/load
 │   ├── i18n.py             # Server-side T() with mtime auto-reload

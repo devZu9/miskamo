@@ -18,7 +18,7 @@ import pretty_midi
 
 ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT))
-from miskamo import MiskamoEngine
+from core.audio2midi import MiskamoEngine
 
 from functools import partial
 from fastapi import FastAPI, UploadFile, File, Form, Query, Request

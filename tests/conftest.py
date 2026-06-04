@@ -10,7 +10,7 @@ import numpy as np
 os.environ.setdefault("MPLBACKEND", "Agg")
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
-# ── Mock miskamo (imports torch, loads GPU model) ──
+# ── Mock core.audio2midi (imports torch, loads GPU model) ──
 def _fake_process(in_path, out_wav, out_mid, reverb=True):
     from pathlib import Path
     Path(out_wav).write_bytes(b"RIFF" + b"\x00" * 4092)
@@ -24,9 +24,9 @@ def _fake_process(in_path, out_wav, out_mid, reverb=True):
 
 _mock_engine = MagicMock()
 _mock_engine.process.side_effect = _fake_process
-_mock_miskamo = MagicMock()
-_mock_miskamo.MiskamoEngine = MagicMock(return_value=_mock_engine)
-sys.modules["miskamo"] = _mock_miskamo
+_mock_audio2midi = MagicMock()
+_mock_audio2midi.MiskamoEngine = MagicMock(return_value=_mock_engine)
+sys.modules["core.audio2midi"] = _mock_audio2midi
 
 # ── Mock core.fluidsynth (requires native SF2 + DLLs) ──
 _mock_fluidsynth = MagicMock()

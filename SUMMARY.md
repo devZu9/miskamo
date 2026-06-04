@@ -38,8 +38,7 @@ python main.py         # напрямую
 
 ```
 ├── main.py                 # FastAPI-сервер (все эндпоинты)
-├── miskamo.py             # MiskamoEngine (CREPE → DDSP → MIDI)
-├── app.py                  # Альтернативный UI на Gradio (не используется)
+├── core/audio2midi.py       # MiskamoEngine (CREPE → DDSP → MIDI)
 │
 ├── core/
 │   ├── config.py           # Пути, settings_cache, save/load
@@ -147,13 +146,12 @@ python main.py         # напрямую
 - `POST /api/settings` — сохранение настроек
 - `POST /api/tests/run` — запуск pytest (SSE stream)
 
-## Miskamo Engine (miskamo.py)
+## Audio-to-MIDI Engine (core/audio2midi.py)
 
-Класс голос → инструмент (DDSP) → MIDI:
+Класс `MiskamoEngine` — голос → инструмент (DDSP) → MIDI:
 - **Загрузка:** DDSP-Timbre-Transfer, AutoEncoderWrapper, PyTorch (CUDA/CPU)
 - **process(input, output_audio, output_midi, add_reverb)** — основной пайплайн
 - **F0→MIDI:** медианный фильтр (5), hysteresis (30 центов), gap fill (0.04 с), min note (0.08 с), confidence (0.35)
-- CLI: `python miskamo.py input.wav --instrument sax --output_audio out.wav --output_midi out.mid`
 
 ## MIDI Generator (core/midi_gen.py)
 
@@ -280,4 +278,4 @@ cursor_shadow, cursor_shadow_length, ableton
 3. **Транслитерация:** кириллица в именах пресетов → латиница
 4. **SUMMARY.md:** **НИКОГДА НЕ УДАЛЯТЬ** — только дополнять или редактировать. В нём вся история проекта.
 5. **FluidSynth:** `FLUIDSYNTH_AUDIO_DRIVER=file` обязателен до создания синтезатора
-6. **DDSP:** `DDSP-Timbre-Transfer/` добавляется в `sys.path` внутри `miskamo.py`
+6. **DDSP:** `DDSP-Timbre-Transfer/` добавляется в `sys.path` внутри `core/audio2midi.py`
