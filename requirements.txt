@@ -1,0 +1,9 @@
+torch>=2.0
+torchaudio>=2.0
+numpy
+soundfile
+pretty_midi
+omegaconf
+torchcrepe
+hmmlearn
+gradio

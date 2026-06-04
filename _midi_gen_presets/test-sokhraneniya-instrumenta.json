@@ -1,0 +1,27 @@
+{
+  "algorithm": "markov",
+  "key": [
+    "C"
+  ],
+  "scale": [
+    "pentatonic_minor"
+  ],
+  "octave_base": 3,
+  "octave_offsets": [
+    1
+  ],
+  "bpm": 125,
+  "instrument": "flute",
+  "time_signature": "4/4",
+  "total_bars": 16,
+  "max_interval": 7,
+  "rest_probability": 0.1,
+  "progression": "pop",
+  "chord_tone_bias": 0.6,
+  "notes_per_chord": 2,
+  "markov_matrix": "generic",
+  "markov_rest": 0.08,
+  "climax_bar": 5,
+  "cadence_rest_prob": 0.1,
+  "_name": "тест-сохранения-инструмента"
+}

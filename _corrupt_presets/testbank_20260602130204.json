@@ -1,0 +1,12 @@
+{
+  "pitch_drift": 0.0,
+  "drift_prob": 0.0,
+  "timing_jitter": 0.0,
+  "jitter_prob": 0.0,
+  "bad_notes": 0.0,
+  "noise": 100.0,
+  "noise_prob": 50.0,
+  "max_dur": 15.0,
+  "split_midi": false,
+  "_name": "testbank_20260602130204"
+}

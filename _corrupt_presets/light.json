@@ -1,0 +1,16 @@
+{
+  "_name": "Light",
+  "pitch_drift": 15,
+  "drift_prob": 30,
+  "timing_jitter": 30,
+  "jitter_prob": 30,
+  "bad_notes": 2,
+  "noise": 20,
+  "noise_prob": 30,
+  "max_dur": 15,
+  "split_midi": true,
+  "cb_pd": true,
+  "cb_tj": true,
+  "cb_bn": true,
+  "cb_nd": true
+}

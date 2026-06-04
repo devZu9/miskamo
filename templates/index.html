@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="{{ LANG }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Miskam'o</title>
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f0f1a;--card:#1a1a2e;--input:#16213e;--border:#2d2d4a;--text:#e2e8f0;--muted:#64748b;--primary:#8b5cf6;--primary-hover:#7c3aed;--accent:#d946ef;--success:#22c55e;--error:#ef4444;--radius:10px}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh}
+.container{max-width:1100px;margin:0 auto}
+header{text-align:center;padding:0rem 0 .5rem}
+header h1{font-size:2rem;font-weight:700;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.3rem}
+header p{color:var(--muted);font-size:.95rem}
+.tabs{display:flex;gap:4px;margin-bottom:.5rem;flex-wrap:wrap}
+.tab{background:var(--card);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;padding:.6rem 1.2rem;cursor:pointer;color:var(--muted);font-size:.9rem;transition:.2s;user-select:none}
+.tab:hover{color:var(--text);border-color:var(--primary)}
+.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.tab-content{display:none}
+.tab-settings{background:transparent;border:none;margin-left:auto;padding:.5rem .8rem;font-size:1.3rem}
+.tab-settings:hover{color:var(--text);border-color:transparent}
+.tab-settings.active{background:var(--primary);color:#fff;border:1px solid var(--primary);border-radius:var(--radius) var(--radius) 0 0}
+.tab-content.active{display:block}
+.test-card{display:flex;flex-direction:column;height:calc(100vh - 250px);min-height:300px}
+.test-header{display:flex;gap:.5rem;margin-bottom:1rem;flex-shrink:0}
+.test-log{flex:1;overflow:auto;background:var(--input);border:1px solid var(--border);border-radius:var(--radius);padding:.8rem;font-family:monospace;font-size:.85rem;line-height:1.5;white-space:pre-wrap;word-break:break-all}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+.card h3{font-size:1rem;color:var(--primary);margin-bottom:1rem}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.col{display:flex;flex-direction:column}
+.col>.card{flex:1}
+.col{display:flex;flex-direction:column;gap:1rem}
+label{display:block;color:var(--muted);font-size:.85rem;margin-bottom:.3rem;font-weight:500}
+input[type="file"]{width:100%;padding:.6rem;background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.9rem}
+input[type="file"]::file-selector-button{background:var(--primary);border:none;border-radius:6px;color:#fff;padding:.4rem .8rem;cursor:pointer}
+input[type="range"]{width:100%;accent-color:var(--primary);margin:.4rem 0}
+input[type="text"],select{width:100%;padding:.55rem .8rem;background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.9rem}
+textarea{width:100%;padding:.55rem .8rem;background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.9rem;resize:vertical}
+select{cursor:pointer}
+.btn{background:linear-gradient(135deg,var(--primary),var(--accent));border:none;border-radius:8px;color:#fff;padding:.6rem 1.5rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;justify-content:center;gap:.4rem}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(139,92,246,.4)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-sm{padding:.4rem 1rem;font-size:.8rem}
+.btn-icon{background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);width:2.2rem;height:2.2rem;padding:0;font-size:1rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.15s}
+.btn-icon:hover{border-color:var(--primary);color:var(--primary)}
+audio{width:100%;border-radius:8px;margin:.5rem 0}
+.slider-row{display:flex;align-items:center;gap:.8rem}
+.slider-row label{flex:1;margin:0;white-space:nowrap}
+.slider-row input[type="range"]{flex:2}
+.slider-row input[type="checkbox"]{flex-shrink:0;width:1rem;height:1rem;accent-color:var(--primary);cursor:pointer;margin:0}
+.slider-row.dimmed{opacity:.4}
+.check-row.dimmed{opacity:.4}
+.slider-row.sub{padding-left:1.8rem}
+.slider-row .val{min-width:3rem;text-align:right;color:var(--primary);font-weight:600;font-size:.9rem}
+.check-row{display:flex;align-items:center;gap:.5rem;padding:.4rem 0}
+.check-row input[type="checkbox"]{width:1.1rem;height:1.1rem;accent-color:var(--primary)}
+.icon-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:.2rem .35rem;font-size:.95rem;border-radius:4px;transition:all .15s}
+.icon-btn:hover{color:var(--text);background:var(--input)}
+.status{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:8px;margin-top:.5rem;font-size:.9rem}
+.status.ok{background:rgba(34,197,94,.1);color:var(--success)}
+.status.err{background:rgba(239,68,68,.1);color:var(--error)}
+.status.wait{background:rgba(139,92,246,.1);color:var(--primary)}
+.log-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1rem;height:450px;display:flex;flex-direction:column}
+.log-card h3{font-size:1rem;color:var(--primary);margin-bottom:1rem;flex-shrink:0}
+.log-box{background:var(--input);border:1px solid var(--border);border-radius:8px;padding:.8rem;font-family:monospace;font-size:.8rem;min-height:200px;max-height:300px;overflow-y:auto;white-space:pre-wrap;color:var(--muted)}
+.log-card .log-box{flex:1;min-height:0;max-height:none}
+.log-box .ok{color:var(--success)}
+.log-box .err{color:var(--error)}
+.log-box .info{color:var(--primary)}
+.spinner{display:inline-block;width:1rem;height:1rem;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lang-picker{text-align:center;padding:4rem 2rem}
+.lang-picker h2{margin-bottom:1.5rem;font-size:1.5rem}
+.lang-picker button{margin:.5rem;min-width:200px;padding:1rem 2rem;font-size:1.1rem}
+.empty-state{text-align:center;padding:3rem;color:var(--muted)}
+.info-tip{display:inline-flex;align-items:center;justify-content:center;width:1.2rem;height:1.2rem;border-radius:50%;background:var(--input);border:1px solid var(--border);color:var(--muted);font-size:.75rem;cursor:pointer;position:relative;user-select:none;transition:.15s;flex-shrink:0}
+.info-tip:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.tip-body{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.7rem 1rem;font-size:.8rem;color:var(--text);line-height:1.5;min-width:280px;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:100;font-weight:400;text-align:left;white-space:pre-line}
+.info-tip.show .tip-body,.info-tip:hover .tip-body{opacity:1}
+.info-tip.show .tip-body::after,.info-tip:hover .tip-body::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--border)}
+.default-reset{cursor:pointer;color:var(--muted);font-size:.75rem;transition:.15s;flex-shrink:0}
+.default-reset:hover{color:var(--primary)}
+
+/* Toggle buttons for key/scale */
+.toggle-group{display:flex;flex-wrap:wrap;gap:.3rem;flex:1}
+.slider-row .toggle-group{flex:2}
+.key-piano{display:grid !important;grid-template-columns:repeat(7,1fr);gap:2px;grid-template-rows:auto auto}
+.tgl-btn{background:var(--input);border:1px solid var(--border);border-radius:6px;padding:.25rem .55rem;font-size:.8rem;color:var(--muted);cursor:pointer;transition:all .15s;user-select:none;font-weight:500}
+.tgl-btn:hover{border-color:var(--primary);color:var(--text)}
+.tgl-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.tgl-btn.active:hover{opacity:.85}
+
+/* Toast */
+.toast-container{position:fixed;top:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem}
+.toast{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:.8rem 1rem;min-width:260px;max-width:380px;box-shadow:0 4px 24px rgba(0,0,0,.5);font-size:.9rem;animation:slideIn .25s ease}
+.toast.ok{border-left:3px solid var(--success)}
+.toast.err{border-left:3px solid var(--error)}
+.toast.info{border-left:3px solid var(--primary)}
+@keyframes slideIn{from{opacity:0;transform:translateX(100%)}to{opacity:1;transform:translateX(0)}}
+
+/* Big process button */
+.btn-big{width:100%;padding:1rem;font-size:1rem;flex-direction:column;gap:.2rem;margin-top:1.5rem}
+.btn-big .sub{font-size:.75rem;opacity:.8;font-weight:400}
+
+/* Spacer */
+.spacer{height:1rem}
+
+/* Output row: player + download icon */
+.out-row{display:flex;align-items:center;gap:.6rem}
+.out-row audio{flex:1;margin:0}
+.out-row .btn-icon{flex-shrink:0}
+
+/* History */
+.hist-item{display:flex;justify-content:space-between;align-items:center;padding:.35rem .6rem;background:var(--input);border:1px solid var(--border);border-radius:6px;margin-bottom:.3rem;font-size:.8rem;gap:.5rem;flex-wrap:wrap}
+.fname{color:var(--text);font-family:monospace;font-size:.78rem;white-space:nowrap}
+.hist-sep{color:var(--border);font-size:1rem;margin:0 .2rem}
+.hist-left,.hist-right{display:flex;align-items:center;gap:.35rem;flex-wrap:nowrap}
+.btn-icon{width:1.5rem;height:1.5rem;padding:0;border-radius:4px;font-size:.7rem;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--text);display:inline-flex;align-items:center;justify-content:center;transition:.1s;text-decoration:none}
+.btn-icon:hover{border-color:var(--primary);color:var(--primary)}
+.btn-icon.playing,.midi-play-btn.playing{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn-icon.dl-btn:hover{border-color:var(--success);color:var(--success)}
+.btn-icon.del-btn:hover{border-color:var(--error);color:var(--error)}
+.dur-label{color:var(--muted);font-size:.72rem;white-space:nowrap;min-width:2.5rem;text-align:right}
+#load-more{width:100%;margin-top:.5rem;padding:.4rem;border:1px dashed var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:.8rem;text-align:center}
+#load-more:hover{border-color:var(--primary);color:var(--primary)}
+
+/* MIDI piano roll */
+.piano-roll{background:var(--input);border:1px solid var(--border);border-radius:8px;overflow:auto;position:relative;margin-top:.5rem;min-height:200px;max-height:300px}
+.piano-roll canvas{display:block}
+
+.settings-card,.checks-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+.settings-card{margin-bottom:0}
+.checks-card{margin-bottom:0}
+.settings-card h3,.checks-card h3{font-size:1rem;color:var(--primary);margin-bottom:1rem}
+
+@media(max-width:768px){.row{grid-template-columns:1fr}}
+
+/* Tab visibility preview */
+.tab-preview{display:flex;flex-wrap:wrap;gap:.4rem}
+.tab-preview-item{display:flex;align-items:center;gap:.4rem;background:var(--input);border:1px solid var(--border);border-radius:8px;padding:.4rem .7rem;font-size:.85rem;cursor:grab;user-select:none;transition:.1s}
+.tab-preview-item:hover{border-color:var(--primary)}
+.tab-preview-item.dragging{opacity:.4;border-style:dashed}
+.tab-preview-item input[type="checkbox"]{flex-shrink:0;width:1rem;height:1rem;accent-color:var(--primary);cursor:pointer}
+.cursor-none,.cursor-none *{cursor:none!important}
+#cursor-dot{transform:translate(-50%,-50%) rotate(var(--cursor-angle,0deg));transform-origin:center center;transition:filter .2s}
+#cursor-dot.spinning{animation:cursor-spin var(--cursor-duration,2.5s) linear infinite}
+/* trail dot CSS handled inline */
+.dimmed{opacity:.35;pointer-events:none}
+.shape-radio-group{display:flex;gap:.5rem;align-items:center}
+.shape-radio-group input[type="radio"]{display:none}
+.shape-radio-group label{cursor:pointer;padding:.3rem;border:2px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;width:2.5rem;height:2.5rem;color:var(--muted);transition:.15s}
+.shape-radio-group label:hover{border-color:var(--primary);color:var(--text)}
+.shape-radio-group input[type="radio"]:checked+label{border-color:var(--primary);background:rgba(139,92,246,.15);color:var(--primary)}
+.tsig-radio-group label{width:auto;min-width:2.5rem;padding:.3rem .6rem;font-size:.85rem;font-weight:500}
+</style>
+</head>
+<body>
+{% set first_launch = settings.language not in ("ru", "en") %}
+{% if first_launch %}
+<div class="container lang-picker">
+  <h1 style="font-size:2.5rem;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Miskam'o</h1>
+  <h2>{{ T("title") }}</h2>
+  <p style="color:var(--muted);margin-bottom:2rem">{{ T("desc") }}</p>
+  <button onclick="setLang('ru')"><i class="fas fa-flag"></i> Русский</button>
+  <button onclick="setLang('en')"><i class="fas fa-flag"></i> English</button>
+</div>
+{% else %}
+
+<div class="container" id="app">
+  <header>
+    <h1>{{ T("title") }}</h1>
+    <p>{{ T("desc") }}</p>
+  </header>
+
+  <div class="tabs" id="tabs">
+  </div>
+
+  <!-- ═══ Tab: Process ═══ -->
+  <div class="tab-content active" id="tab-process">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <h3>{{ T("upload") }}</h3>
+          <input type="file" id="audio-file" accept=".wav,.mp3,.flac,.ogg">
+          <div class="spacer"></div>
+          <button class="btn btn-sm" onclick="toggleRecord()" id="record-btn"><i class="fas fa-microphone"></i> {{ T("record_mic") }}</button>
+          <span id="record-timer" style="color:var(--muted);font-size:.8rem;margin-left:.5rem;display:none"></span>
+          <div id="record-preview" style="display:none;margin-top:.5rem"><audio controls id="recorded-preview" style="margin:0"></audio><button class="btn btn-sm" onclick="clearRecording()" style="margin-left:.3rem"><i class="fas fa-times"></i></button></div>
+          <div class="check-row" style="margin-top:.8rem">
+            <input type="checkbox" id="reverb" checked>
+            <label for="reverb" style="margin:0">{{ T("reverb") }}</label>
+            <span class="info-tip" onclick="this.classList.toggle('show')"><i class="fas fa-circle-info"></i><span class="tip-body">{{ T('reverb_tip') }}</span></span>
+          </div>
+          <button onclick="processAudio()" id="process-btn" class="btn btn-big">
+            <span>{{ T("process_btn") }}</span>
+            <span class="sub">{{ T("process_btn_sub") }}</span>
+          </button>
+          <div id="process-status" class="status" style="display:none"></div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <h3>{{ T("out_audio") }}</h3>
+          <div id="audio-out-box" class="empty-state">{{ T("out_audio") }}</div>
+        </div>
+        <div class="card">
+          <h3>{{ T("out_midi") }}</h3>
+          <div id="midi-out-box" class="empty-state">{{ T("out_midi") }}</div>
+          <div id="midi-piano" class="piano-roll" style="display:none"><img id="piano-img" style="width:100%;border-radius:8px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-eval">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <h3>{{ T("listen") }}</h3>
+          <input type="file" id="eval-file" accept=".wav,.mp3,.flac" style="margin-bottom:.8rem">
+          <audio id="eval-player" controls style="display:none"></audio>
+          <label>{{ T("rating") }}</label>
+          <input type="range" id="eval-rating" min="1" max="10" value="5" oninput="this.nextElementSibling.textContent=this.value">
+          <span style="color:var(--primary);font-weight:600;font-size:1.1rem">5</span>
+          <label style="margin-top:.8rem">{{ T("note") }}</label>
+          <textarea id="eval-note" rows="2" placeholder="..."></textarea>
+          <button onclick="saveRating()" style="margin-top:.8rem" class="btn">{{ T("rate_btn") }}</button>
+          <div id="rate-status" class="status" style="display:none"></div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <h3>{{ T("ratings_log") }}</h3>
+          <div class="log-box" id="ratings-log">{{ T("ratings_log") }}...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Tab: History ═══ -->
+  <div class="tab-content" id="tab-history">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <h3 style="margin:0">{{ T("nav_history") }}</h3>
+        <button class="btn btn-sm" onclick="clearHistory()" style="background:var(--error)"><i class="fas fa-trash"></i> {{ T("clear_all") }}</button>
+      </div>
+      <div id="history-list"><div class="empty-state">{{ T("history_empty") }}</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ Tab: MIDI Gen ═══ -->
+  <div class="tab-content" id="tab-midigen">
+    <div class="row">
+      <!-- Card 1: Mass gen, seed, preset -->
+      <div class="col">
+        <div class="card">
+          <h3 style="display:flex;align-items:center;gap:.5rem">
+            <span>{{ T("midigen_title") }}</span>
+            <label style="margin-left:auto;display:inline-flex;align-items:center;gap:.3rem;font-size:.8rem;font-weight:400;cursor:pointer;white-space:nowrap">
+              <input type="checkbox" id="mg-mass" onchange="mgMassToggle()">{{ T("midigen_mass") }}
+            </label>
+            <input type="number" id="mg-count" value="8" min="1" max="1000" oninput="mgSaveCount()" style="width:3.5rem;text-align:center;padding:.15rem .3rem;border-radius:4px;border:1px solid var(--border);background:var(--input);color:var(--text);font-size:.85rem">
+          </h3>
+          <div style="display:flex;align-items:center;gap:.5rem;margin:.3rem 0 .2rem;margin-bottom:.8rem" id="mg-seed-row">
+            <label style="flex-shrink:0;min-width:4.5rem;font-size:.85rem;font-weight:500;color:var(--muted);margin:0">{{ T("midigen_seed") }}</label>
+            <input type="text" id="mg-seed" value="-1" style="flex:1;text-align:center;padding:.25rem .3rem;border-radius:6px;border:1px solid var(--border);background:var(--input);color:var(--text);font-size:.85rem;font-family:monospace">
+            <div style="display:flex;gap:.2rem;flex-shrink:0;min-width:5.5rem;justify-content:space-around">
+              <button class="icon-btn" onclick="mgSeedNew()" title="{{ T('midigen_seed_new') }}"><i class="fas fa-dice"></i></button>
+              <button class="icon-btn" onclick="mgSeedReset()" title="{{ T('midigen_seed_random') }}"><i class="fas fa-minus"></i></button>
+              <button class="icon-btn" onclick="mgSeedRestore()" title="{{ T('midigen_seed_restore') }}"><i class="fas fa-undo-alt"></i></button>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;margin:.3rem 0 .2rem">
+            <label style="flex-shrink:0;min-width:4.5rem;font-size:.85rem;font-weight:500;color:var(--muted);margin:0">{{ T("midigen_presets") }}</label>
+            <select id="mg-preset" style="flex:1;min-width:0;font-size:.85rem" onchange="mgPresetChanged()">
+              <option value="">{{ T("preset_placeholder") }}</option>
+            </select>
+            <div style="display:flex;gap:.2rem;flex-shrink:0;min-width:5.5rem;justify-content:space-around">
+              <button class="icon-btn" onclick="mgPresetSave()" title="{{ T('preset_tip_save') }}"><i class="fas fa-save"></i></button>
+              <button class="icon-btn" onclick="mgPresetRename()" title="{{ T('preset_tip_rename') }}"><i class="fas fa-pen"></i></button>
+              <button class="icon-btn" onclick="mgPresetDelete()" title="{{ T('preset_tip_delete') }}"><i class="fas fa-trash-can"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Algorithm + advanced settings (always visible) -->
+      <div class="col">
+        <div class="card">
+          <h3>2.</h3>
+          <div class="slider-row" style="margin-bottom:.6rem">
+            <label>{{ T("midigen_algorithm") }}</label>
+            <select id="mg-algo" onchange="mgAlgoChange();mgResetPresetDropdown()" style="flex:2">
+              <option value="scale_walk">{{ T("midigen_algo_scale_walk") }}</option>
+              <option value="chord">{{ T("midigen_algo_chord") }}</option>
+              <option value="markov">{{ T("midigen_algo_markov") }}</option>
+              <option value="contour">{{ T("midigen_algo_contour") }}</option>
+              <option value="combined">{{ T("midigen_algo_combined") }}</option>
+            </select>
+          </div>
+
+          <!-- Per-algorithm advanced settings -->
+          <div class="mg-algo-panel" id="mg-panel-scale_walk">
+            <div class="slider-row"><label>{{ T("midigen_max_interval") }}</label>
+              <input type="range" id="mg-max_int" min="1" max="24" value="7" oninput="mgVal(this)" onchange="mgResetPresetDropdown()"><span class="val">7</span>
+            </div>
+            <div class="slider-row"><label>{{ T("midigen_rest_prob") }}</label>
+              <input type="range" id="mg-rest_prob" min="0" max="100" value="10" oninput="mgVal(this)" onchange="mgResetPresetDropdown()"><span class="val">10</span>
+            </div>
+          </div>
+
+          <div class="mg-algo-panel" id="mg-panel-chord" style="display:none">
+            <div class="slider-row"><label>{{ T("midigen_progression") }}</label>
+              <select id="mg-progression" style="flex:2" onchange="mgResetPresetDropdown()">
+                <option value="pop">{{ T("midigen_prog_pop") }}</option>
+                <option value="edm">{{ T("midigen_prog_edm") }}</option>
+                <option value="rock">{{ T("midigen_prog_rock") }}</option>
+                <option value="blues_12">{{ T("midigen_prog_blues") }}</option>
+                <option value="jazz">{{ T("midigen_prog_jazz") }}</option>
+                <option value="classical">{{ T("midigen_prog_classical") }}</option>
+                <option value="rap">{{ T("midigen_prog_rap") }}</option>
+                <option value="reggae">{{ T("midigen_prog_reggae") }}</option>
+              </select>
+            </div>
+            <div class="slider-row"><label>{{ T("midigen_chord_tone_bias") }}</label>
+              <input type="range" id="mg-chord_bias" min="0" max="100" value="60" oninput="mgVal(this)" onchange="mgResetPresetDropdown()"><span class="val">60</span>
+            </div>
+            <div class="slider-row"><label>{{ T("midigen_notes_per_chord") }}</label>
+              <select id="mg-notes_pc" style="flex:1" onchange="mgResetPresetDropdown()"><option>1</option><option selected>2</option><option>3</option><option>4</option></select>
+            </div>
+          </div>
+
+          <div class="mg-algo-panel" id="mg-panel-markov" style="display:none">
+            <div class="slider-row"><label>{{ T("midigen_markov_matrix") }}</label>
+              <select id="mg-markov_mat" style="flex:2" onchange="mgResetPresetDropdown()"><option value="generic">{{ T("midigen_markov_generic") }}</option></select>
+            </div>
+            <div class="slider-row"><label>{{ T("midigen_rest_prob") }}</label>
+              <input type="range" id="mg-markov_rest" min="0" max="100" value="8" oninput="mgVal(this)" onchange="mgResetPresetDropdown()"><span class="val">8</span>
+            </div>
+          </div>
+
+          <div class="mg-algo-panel" id="mg-panel-contour" style="display:none">
+            <div class="slider-row"><label>{{ T("midigen_climax_bar") }}</label>
+              <input type="range" id="mg-climax" min="1" max="32" value="5" oninput="mgVal(this)" onchange="mgResetPresetDropdown()"><span class="val">5</span>
+            </div>
+            <div class="slider-row"><label>{{ T("midigen_cadence_rest") }}</label>
+              <input type="range" id="mg-cadence_rest" min="0" max="100" value="10" oninput="mgVal(this)" onchange="mgResetPresetDropdown()"><span class="val">10</span>
+            </div>
+          </div>
+
+          <div class="mg-algo-panel" id="mg-panel-combined" style="display:none">
+            <p style="color:var(--muted);font-size:.85rem">{{ T("midigen_combined_desc") }}</p>
+          </div>
+
+          <div id="mg-status" class="status" style="display:none"></div>
+        </div>
+      </div>
+
+      <!-- Card 3: Key, Octaves, Instrument -->
+      <div class="col">
+        <div class="card">
+          <h3>3.</h3>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
+            <label style="flex-shrink:0;min-width:8rem;font-size:.85rem;font-weight:500;color:var(--muted);margin:0">{{ T("midigen_key") }}</label>
+            <div class="toggle-group key-piano" id="mg-key-group" style="flex:1">
+              <span class="tgl-btn" data-value="C#" onclick="mgToggleKey(this,'C#')" style="grid-row:1;grid-column:1/span 2;justify-self:center">C#</span>
+              <span class="tgl-btn" data-value="D#" onclick="mgToggleKey(this,'D#')" style="grid-row:1;grid-column:2/span 2;justify-self:center">D#</span>
+              <span class="tgl-btn" data-value="F#" onclick="mgToggleKey(this,'F#')" style="grid-row:1;grid-column:4/span 2;justify-self:center">F#</span>
+              <span class="tgl-btn" data-value="G#" onclick="mgToggleKey(this,'G#')" style="grid-row:1;grid-column:5/span 2;justify-self:center">G#</span>
+              <span class="tgl-btn" data-value="A#" onclick="mgToggleKey(this,'A#')" style="grid-row:1;grid-column:6/span 2;justify-self:center">A#</span>
+              <span class="tgl-btn active" data-value="C" onclick="mgToggleKey(this,'C')" style="grid-row:2;grid-column:1">C</span>
+              <span class="tgl-btn" data-value="D" onclick="mgToggleKey(this,'D')" style="grid-row:2;grid-column:2">D</span>
+              <span class="tgl-btn" data-value="E" onclick="mgToggleKey(this,'E')" style="grid-row:2;grid-column:3">E</span>
+              <span class="tgl-btn" data-value="F" onclick="mgToggleKey(this,'F')" style="grid-row:2;grid-column:4">F</span>
+              <span class="tgl-btn" data-value="G" onclick="mgToggleKey(this,'G')" style="grid-row:2;grid-column:5">G</span>
+              <span class="tgl-btn" data-value="A" onclick="mgToggleKey(this,'A')" style="grid-row:2;grid-column:6">A</span>
+              <span class="tgl-btn" data-value="B" onclick="mgToggleKey(this,'B')" style="grid-row:2;grid-column:7">B</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">
+            <label style="flex-shrink:0;min-width:8rem;font-size:.85rem;font-weight:500;color:var(--muted);margin:0">{{ T("midigen_bars") }}</label>
+            <input type="range" id="mg-bars" min="2" max="32" value="8" oninput="mgVal(this)" onchange="mgBpmBarsChanged(this)" style="flex:1">
+            <span class="val" style="min-width:3rem;text-align:right;color:var(--primary);font-weight:600;font-size:.9rem">8</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
+            <label style="flex-shrink:0;min-width:8rem;font-size:.85rem;font-weight:500;color:var(--muted);margin:0">{{ T("midigen_octave") }}</label>
+            <div style="display:flex;align-items:center;gap:.3rem;flex:1">
+              <span class="tgl-btn octave-btn" data-offset="-2" onclick="mgToggleOctave(this)">-2</span>
+              <span class="tgl-btn octave-btn active" data-offset="-1" onclick="mgToggleOctave(this)">-1</span>
+              <select id="mg-octave" onchange="mgOctaveChanged()" style="width:3.2rem;text-align:center;padding:.2rem .3rem;background:var(--input);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.85rem">
+                <option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
+              </select>
+              <span class="tgl-btn octave-btn active" data-offset="1" onclick="mgToggleOctave(this)">+1</span>
+              <span class="tgl-btn octave-btn" data-offset="2" onclick="mgToggleOctave(this)">+2</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-top:.4rem">
+            <label style="flex-shrink:0;min-width:8rem;font-size:.85rem;font-weight:500;color:var(--muted);margin:0">{{ T("midigen_bpm") }}</label>
+            <input type="range" id="mg-bpm" min="40" max="200" value="120" oninput="mgVal(this)" onchange="mgBpmBarsChanged(this)" style="flex:1">
+            <span class="val" style="min-width:3rem;text-align:right;color:var(--primary);font-weight:600;font-size:.9rem">120</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <label style="flex-shrink:0;min-width:8rem;font-size:.85rem;font-weight:500;color:var(--muted);margin:0">{{ T("midigen_tsig") }}</label>
+            <select id="mg-tsig" style="display:none">
+              <option>2/4</option><option>3/4</option><option selected>4/4</option><option>6/8</option><option>7/8</option>
+            </select>
+            <div class="shape-radio-group tsig-radio-group" style="flex:1">
+              <input type="radio" name="mg-tsig-radio" id="tsig-2-4" value="2/4" onchange="mgTsigChange(this)">
+              <label for="tsig-2-4">2/4</label>
+              <input type="radio" name="mg-tsig-radio" id="tsig-3-4" value="3/4" onchange="mgTsigChange(this)">
+              <label for="tsig-3-4">3/4</label>
+              <input type="radio" name="mg-tsig-radio" id="tsig-4-4" value="4/4" checked onchange="mgTsigChange(this)">
+              <label for="tsig-4-4">4/4</label>
+              <input type="radio" name="mg-tsig-radio" id="tsig-6-8" value="6/8" onchange="mgTsigChange(this)">
+              <label for="tsig-6-8">6/8</label>
+              <input type="radio" name="mg-tsig-radio" id="tsig-7-8" value="7/8" onchange="mgTsigChange(this)">
+              <label for="tsig-7-8">7/8</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Scale, Generate button -->
+      <div class="col">
+        <div class="card">
+          <h3 style="display:flex;align-items:center;gap:.5rem">
+            <span>4.</span>
+            <label style="margin-left:auto;display:inline-flex;align-items:center;gap:.3rem;font-size:.8rem;font-weight:400;cursor:pointer;white-space:nowrap;color:var(--muted)">{{ T("midigen_instrument") }}</label>
+            <select id="mg-instr" style="width:auto;font-size:.8rem;padding:.15rem .3rem;background:var(--input);border:1px solid var(--border);border-radius:6px;color:var(--text)" onchange="mgInstrChange()">
+              <option value="piano">{{ T("midigen_inst_piano") }}</option>
+              <option value="guitar">{{ T("midigen_inst_guitar") }}</option>
+              <option value="bass">{{ T("midigen_inst_bass") }}</option>
+              <option value="violin">{{ T("midigen_inst_violin") }}</option>
+              <option value="trumpet">{{ T("midigen_inst_trumpet") }}</option>
+              <option value="sax">{{ T("midigen_inst_sax") }}</option>
+              <option value="flute">{{ T("midigen_inst_flute") }}</option>
+              <option value="vibraphone">{{ T("midigen_inst_vibes") }}</option>
+              <option value="synth_pad">{{ T("midigen_inst_synth") }}</option>
+            </select>
+          </h3>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem">
+            <label style="flex-shrink:0;min-width:7rem;font-size:.85rem;font-weight:500;color:var(--muted);margin:0">{{ T("midigen_scale") }}</label>
+            <div class="toggle-group" id="mg-scale-group" style="flex:2">
+              <span class="tgl-btn active" data-value="major" onclick="mgToggleScale(this,'major')">{{ T("midigen_scale_major") }}</span>
+              <span class="tgl-btn" data-value="minor" onclick="mgToggleScale(this,'minor')">{{ T("midigen_scale_minor") }}</span>
+              <span class="tgl-btn" data-value="pentatonic_major" onclick="mgToggleScale(this,'pentatonic_major')">{{ T("midigen_scale_penta_maj") }}</span>
+              <span class="tgl-btn" data-value="pentatonic_minor" onclick="mgToggleScale(this,'pentatonic_minor')">{{ T("midigen_scale_penta_min") }}</span>
+              <span class="tgl-btn" data-value="blues" onclick="mgToggleScale(this,'blues')">{{ T("midigen_scale_blues") }}</span>
+              <span class="tgl-btn" data-value="dorian" onclick="mgToggleScale(this,'dorian')">{{ T("midigen_scale_dorian") }}</span>
+              <span class="tgl-btn" data-value="phrygian" onclick="mgToggleScale(this,'phrygian')">{{ T("midigen_scale_phrygian") }}</span>
+              <span class="tgl-btn" data-value="lydian" onclick="mgToggleScale(this,'lydian')">{{ T("midigen_scale_lydian") }}</span>
+              <span class="tgl-btn" data-value="mixolydian" onclick="mgToggleScale(this,'mixolydian')">{{ T("midigen_scale_mixolydian") }}</span>
+              <span class="tgl-btn" data-value="locrian" onclick="mgToggleScale(this,'locrian')">{{ T("midigen_scale_locrian") }}</span>
+            </div>
+          </div>
+          <button class="btn btn-big" onclick="mgGenerate()" id="mg-gen-btn" style="margin-top:.3rem">
+            <i class="fas fa-wand-magic"></i> {{ T("midigen_gen_btn") }}
+            <span class="sub">{{ T("midigen_gen_sub") }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Card 5: Preview/listen (last, full width) -->
+      <div class="col" style="grid-column:1/-1">
+        <div class="card" id="mg-preview-card">
+          <h3>{{ T("midigen_preview") }}</h3>
+          <div id="mg-preview" style="display:none">
+            <div class="out-row">
+              <audio id="mg-audio" controls></audio>
+              <span class="btn-icon" onclick="mgDownloadMidi()" style="cursor:pointer" title="{{ T('midigen_download') }}"><i class="fas fa-download"></i></span>
+            </div>
+            <div style="margin-top:.5rem">
+              <img id="mg-pianoroll" style="width:100%;border-radius:8px">
+            </div>
+          </div>
+          <div id="mg-empty" class="empty-state">
+            <i class="fas fa-music" style="font-size:2.5rem;opacity:.3;margin-bottom:.5rem"></i>
+            <p>{{ T("midigen_empty") }}</p>
+          </div>
+        </div>
+        <div class="card" id="mg-log-card" style="display:none">
+          <h3>{{ T("gen_log") }}</h3>
+          <div class="log-box" id="mg-log"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Tab: Dataset ═══ -->
+  <div class="tab-content" id="tab-dataset">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <h3>{{ T("bank") }}</h3>
+          <div style="display:flex;gap:.5rem">
+            <select id="bank-select" style="flex:1" onchange="autoSaveBank()">
+              {% for b in banks %}
+              <option value="{{ b.name }}" {% if b.name == settings.midi_bank %}selected{% endif %}>{{ b.name }} ({{ b.count }} {{ T("files_in") }})</option>
+              {% endfor %}
+            </select>
+            <button class="icon-btn" onclick="refreshBanks()" title="{{ T('preset_tip_upload') }}"><i class="fas fa-undo"></i></button>
+            <button class="icon-btn" onclick="renameBank()" title="{{ T('preset_tip_rename') }}"><i class="fas fa-pen"></i></button>
+            <button class="icon-btn" onclick="deleteBank()" title="{{ T('preset_tip_delete') }}"><i class="fas fa-trash-can"></i></button>
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="margin-bottom:.4rem">{{ T("drift_card") }}</h3>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.2rem">
+            <select id="preset-select" style="flex:1;min-width:0;font-size:.85rem" onchange="presetChanged()">
+              <option value="">{{ T("preset_placeholder") }}</option>
+            </select>
+            <button class="icon-btn" onclick="presetSave()" title="{{ T('preset_tip_save') }}"><i class="fas fa-save"></i></button>
+            <button class="icon-btn" onclick="presetRename()" title="{{ T('preset_tip_rename') }}"><i class="fas fa-pen"></i></button>
+            <button class="icon-btn" onclick="presetDelete()" title="{{ T('preset_tip_delete') }}"><i class="fas fa-trash-can"></i></button>
+            <button class="icon-btn" onclick="presetUpload()" title="{{ T('preset_tip_upload') }}"><i class="fas fa-upload"></i></button>
+          </div>
+          <input type="file" id="preset-file-input" accept=".json" style="display:none" onchange="presetUploadFile(this)">
+          <div class="slider-row" id="row-pd"><input type="checkbox" id="cb-pd" checked onchange="toggleParam('pd')"><label>{{ T("drift") }}</label><span class="info-tip" onclick="this.classList.toggle('show')"><i class="fas fa-circle-info"></i><span class="tip-body">{{ T("drift_tip") }}</span></span><span class="default-reset" onclick="resetSlider('pd',30)"><i class="fas fa-undo"></i></span><input type="range" id="pd" min="0" max="200" value="30" oninput="datasetParamChange(this)"><span class="val">30</span></div>
+          <div class="slider-row sub" id="row-dp"><label>{{ T("drift_prob") }}</label><span class="info-tip" onclick="this.classList.toggle('show')"><i class="fas fa-circle-info"></i><span class="tip-body">{{ T("drift_prob_tip") }}</span></span><span class="default-reset" onclick="resetSlider('dp',50)"><i class="fas fa-undo"></i></span><input type="range" id="dp" min="0" max="100" value="50" oninput="datasetParamChange(this)"><span class="val">50</span></div>
+          <div class="slider-row" id="row-tj"><input type="checkbox" id="cb-tj" checked onchange="toggleParam('tj')"><label>{{ T("jitter") }}</label><span class="info-tip" onclick="this.classList.toggle('show')"><i class="fas fa-circle-info"></i><span class="tip-body">{{ T("jitter_tip") }}</span></span><span class="default-reset" onclick="resetSlider('tj',50)"><i class="fas fa-undo"></i></span><input type="range" id="tj" min="0" max="500" value="50" oninput="datasetParamChange(this)"><span class="val">50</span></div>
+          <div class="slider-row sub" id="row-jp"><label>{{ T("jitter_prob") }}</label><span class="info-tip" onclick="this.classList.toggle('show')"><i class="fas fa-circle-info"></i><span class="tip-body">{{ T("jitter_prob_tip") }}</span></span><span class="default-reset" onclick="resetSlider('jp',50)"><i class="fas fa-undo"></i></span><input type="range" id="jp" min="0" max="100" value="50" oninput="datasetParamChange(this)"><span class="val">50</span></div>
+          <div class="slider-row" id="row-bn"><input type="checkbox" id="cb-bn" checked onchange="toggleParam('bn')"><label>{{ T("bad") }}</label><span class="info-tip" onclick="this.classList.toggle('show')"><i class="fas fa-circle-info"></i><span class="tip-body">{{ T("bad_tip") }}</span></span><span class="default-reset" onclick="resetSlider('bn',4)"><i class="fas fa-undo"></i></span><input type="range" id="bn" min="0" max="50" value="4" oninput="datasetParamChange(this)"><span class="val">4</span></div>
+          <div class="slider-row" id="row-nd"><input type="checkbox" id="cb-nd" checked onchange="toggleParam('nd')"><label>{{ T("noise") }}</label><span class="info-tip" onclick="this.classList.toggle('show')"><i class="fas fa-circle-info"></i><span class="tip-body">{{ T("noise_tip") }}</span></span><span class="default-reset" onclick="resetSlider('nd',50)"><i class="fas fa-undo"></i></span><input type="range" id="nd" min="0" max="100" value="50" oninput="datasetParamChange(this)"><span class="val">50</span></div>
+          <div class="slider-row sub" id="row-np"><label>{{ T("noise_prob") }}</label><span class="info-tip" onclick="this.classList.toggle('show')"><i class="fas fa-circle-info"></i><span class="tip-body">{{ T("noise_prob_tip") }}</span></span><span class="default-reset" onclick="resetSlider('np',50)"><i class="fas fa-undo"></i></span><input type="range" id="np" min="0" max="100" value="50" oninput="datasetParamChange(this)"><span class="val">50</span></div>
+          <div class="slider-row" id="row-md"><input type="checkbox" id="cb-md" checked onchange="toggleParam('md')"><label>{{ T("duration") }}</label><span class="info-tip" onclick="this.classList.toggle('show')"><i class="fas fa-circle-info"></i><span class="tip-body">{{ T("duration_tip") }}</span></span><span class="default-reset" onclick="resetSlider('md',15)"><i class="fas fa-undo"></i></span><input type="range" id="md" min="2" max="30" value="15" oninput="datasetParamChange(this)"><span class="val">15</span></div>
+          <div class="check-row" id="row-split"><input type="checkbox" id="cb-split" checked onchange="splitChanged()"><label for="cb-split">{{ T("split") }}</label><span class="info-tip" onclick="this.classList.toggle('show')"><i class="fas fa-circle-info"></i><span class="tip-body">{{ T("split_tip") }}</span></span></div>
+          <button onclick="generateDataset()" style="margin-top:1rem" class="btn" id="gen-btn">{{ T("gen_btn") }}</button>
+          <div id="gen-status" class="status" style="display:none"></div>
+          <div id="gen-cancel" style="display:none;margin-top:.5rem;text-align:center"><button class="btn btn-sm" onclick="cancelGeneration()">{{ T("stop") }}</button></div>
+        </div>
+      </div>
+      <div class="col">
+      <div class="log-card">
+          <h3>{{ T("gen_log") }}</h3>
+          <div class="log-box" id="gen-log"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Tab: Train ═══ -->
+  <div class="tab-content" id="tab-train">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <h3>{{ T("train_btn") }}</h3>
+          <label>{{ T("lr") }}</label>
+          <input type="text" id="train-lr" value="0.0001">
+          <label style="margin-top:.8rem">{{ T("epochs") }}</label>
+          <input type="text" id="train-epochs" value="100">
+          <button onclick="startTraining()" style="margin-top:1rem" class="btn">{{ T("train_btn") }}</button>
+          <div id="train-status" class="status" style="display:none"></div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <h3>{{ T("train_log") }}</h3>
+          <div class="log-box" id="train-log">{{ T("train_soon") }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Tab: Tests ═══ -->
+  <div class="tab-content" id="tab-tests">
+    <div class="card test-card">
+      <div class="test-header">
+        <button class="btn" onclick="runTests()"><i class="fas fa-play"></i> {{ T("test_run_all") }}</button>
+        <button class="btn btn-icon" onclick="clearTestLog()" title="{{ T('test_clear_log') }}" style="margin-left:auto"><i class="fas fa-trash-can"></i></button>
+      </div>
+      <div class="test-log" id="test-log">{{ T("test_ready") }}</div>
+    </div>
+  </div>
+
+  <!-- ═══ Tab: Settings ═══ -->
+  <div class="tab-content" id="tab-settings">
+    <div class="row">
+
+      <!-- Tab visibility (full width, top) -->
+      <div class="checks-card" style="grid-column:1/-1">
+        <h3><i class="fas fa-eye"></i> {{ T("tab_visibility") }}</h3>
+        <p style="color:var(--muted);font-size:.85rem;margin-bottom:.8rem">{{ T("tab_visibility_desc") }}</p>
+        <div id="settings-tab-order" class="tab-preview"></div>
+      </div>
+
+      <div class="settings-card">
+        <h3>{{ T("nav_settings") }}</h3>
+        <div>
+          <label>{{ T("lang") }}</label>
+          <select id="settings-lang" onchange="autoSave()">
+            <option value="ru" {% if LANG == 'ru' %}selected{% endif %}>Русский</option>
+            <option value="en" {% if LANG == 'en' %}selected{% endif %}>English</option>
+          </select>
+        </div>
+        <div class="slider-row" style="margin-top:1rem">
+          <label><i class="fas fa-clock"></i> {{ T("settings_toast") }}</label>
+          <input type="range" id="settings-toast" min="3" max="15" step="3" value="{{ settings.toast_sec|default(6) }}" oninput="this.parentElement.querySelector('.val').textContent=this.value" onchange="autoSave()">
+          <span class="val">{{ settings.toast_sec|default(6) }}</span>
+        </div>
+        <div class="slider-row" style="margin-top:1rem">
+          <label><i class="fas fa-music"></i> {{ T("settings_default_instrument") }}</label>
+          <select id="settings-instr" onchange="autoSave()" style="flex:1">
+            <option value="piano" {% if settings.default_instrument == 'piano' %}selected{% endif %}>{{ T("midigen_inst_piano") }}</option>
+            <option value="guitar" {% if settings.default_instrument == 'guitar' %}selected{% endif %}>{{ T("midigen_inst_guitar") }}</option>
+            <option value="bass" {% if settings.default_instrument == 'bass' %}selected{% endif %}>{{ T("midigen_inst_bass") }}</option>
+            <option value="violin" {% if settings.default_instrument == 'violin' %}selected{% endif %}>{{ T("midigen_inst_violin") }}</option>
+            <option value="trumpet" {% if settings.default_instrument == 'trumpet' %}selected{% endif %}>{{ T("midigen_inst_trumpet") }}</option>
+            <option value="sax" {% if settings.default_instrument == 'sax' %}selected{% endif %}>{{ T("midigen_inst_sax") }}</option>
+            <option value="flute" {% if settings.default_instrument == 'flute' %}selected{% endif %}>{{ T("midigen_inst_flute") }}</option>
+            <option value="vibraphone" {% if settings.default_instrument == 'vibraphone' %}selected{% endif %}>{{ T("midigen_inst_vibes") }}</option>
+            <option value="synth_pad" {% if settings.default_instrument == 'synth_pad' %}selected{% endif %}>{{ T("midigen_inst_synth") }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="checks-card">
+        <h3>{{ T("settings_other") }}</h3>
+        <div class="check-row">
+          <input type="checkbox" id="settings-confirm-del" {% if settings.confirm_delete|default(True) %}checked{% endif %} onchange="autoSave()">
+          <label for="settings-confirm-del" style="margin:0"><i class="fas fa-trash"></i> {{ T("settings_del_confirm") }}</label>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="settings-clear-tmp" {% if settings.clear_tmp|default(True) %}checked{% endif %} onchange="autoSave()">
+          <label for="settings-clear-tmp" style="margin:0"><i class="fas fa-broom"></i> {{ T("settings_clear_tmp") }}</label>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="settings-ableton" {% if settings.ableton %}checked{% endif %} onchange="autoSave(this.checked?'ableton_on':'ableton_off')">
+          <label for="settings-ableton" style="margin:0"><i class="fas fa-exchange-alt"></i> {{ T("settings_ableton") }}</label>
+        </div>
+      </div>
+
+      <!-- Cursor settings card (full width, bottom) -->
+      <div class="settings-card" style="grid-column:1/-1">
+        <h3><i class="fas fa-mouse-pointer"></i> {{ T("settings_cursor_card") }}</h3>
+        <!-- Enable checkbox + shape radios inline (always clickable) -->
+        <div class="check-row" style="justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <input type="checkbox" id="settings-cursor-enable" {% if settings.cursor_enabled %}checked{% endif %} onchange="_cursorEnabled=this.checked;var v=this.checked?parseInt(document.getElementById('settings-cursor').value):0;mgCursorPreview(v);mgCursorToggleDim(this.checked);autoSave(this.checked?'cursor_on':'cursor_off')">
+            <label for="settings-cursor-enable" style="margin:0">{{ T("settings_cursor_enable") }}</label>
+          </div>
+          <div class="shape-radio-group">
+            <input type="radio" name="cursor-shape" id="cs-triangle" value="triangle" onchange="mgCursorShapeChange(this.value);autoSave()" {% if settings.cursor_shape == 'triangle' %}checked{% endif %}>
+            <label for="cs-triangle" title="{{ T('cursor_shape_triangle') }}"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12,2 L22,22 L2,22 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></label>
+            <input type="radio" name="cursor-shape" id="cs-square" value="square" onchange="mgCursorShapeChange(this.value);autoSave()" {% if settings.cursor_shape == 'square' %}checked{% endif %}>
+            <label for="cs-square" title="{{ T('cursor_shape_square') }}"><svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg></label>
+            <input type="radio" name="cursor-shape" id="cs-circle" value="circle" onchange="mgCursorShapeChange(this.value);autoSave()" {% if settings.cursor_shape == 'circle' %}checked{% endif %}>
+            <label for="cs-circle" title="{{ T('cursor_shape_circle') }}"><svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/></svg></label>
+          </div>
+        </div>
+        <div id="cursor-settings-body">
+          <!-- Size -->
+          <div class="slider-row" style="margin-top:.3rem">
+            <label><i class="fas fa-mouse-pointer"></i> {{ T("settings_cursor_size") }}</label>
+            <input type="range" id="settings-cursor" min="16" max="64" step="2" value="{{ settings.cursor_size|default(24) }}" oninput="mgCursorPreview(parseInt(this.value));this.parentElement.querySelector('.val').textContent=this.value+'px'" onchange="autoSave()">
+            <span class="val">{{ settings.cursor_size|default(24) }}px</span>
+          </div>
+          <!-- Angle (dimmed for circle) -->
+          <div class="slider-row" id="cursor-angle-row" style="margin-top:.2rem">
+            <label><i class="fas fa-undo-alt"></i> {{ T("settings_cursor_angle") }}</label>
+            <input type="range" id="settings-cursor-angle" min="0" max="180" value="{{ settings.cursor_angle|default(0) }}" oninput="mgCursorAngleChange(this.value);this.parentElement.querySelector('.val').textContent=this.value+'°'" onchange="autoSave()">
+            <span class="val">{{ settings.cursor_angle|default(0) }}°</span>
+          </div>
+          <!-- Rotation checkbox -->
+          <div class="check-row" style="margin-top:.2rem">
+            <input type="checkbox" id="settings-cursor-rotation" {% if settings.cursor_rotation %}checked{% endif %} onchange="mgCursorRotationChange(this.checked);autoSave()">
+            <label for="settings-cursor-rotation" style="margin:0"><i class="fas fa-sync-alt"></i> {{ T("settings_cursor_rotation") }}</label>
+          </div>
+          <!-- Rotation speed (dimmed when rotation off) -->
+          <div class="slider-row sub" id="cursor-speed-row">
+            <label><i class="fas fa-tachometer-alt"></i> {{ T("settings_cursor_rotation_speed") }}</label>
+            <input type="range" id="settings-cursor-rotation-speed" min="1" max="20" value="{{ settings.cursor_rotation_speed|default(5) }}" oninput="mgCursorRotationSpeedChange(this.value);this.parentElement.querySelector('.val').textContent=this.value" onchange="autoSave()">
+            <span class="val">{{ settings.cursor_rotation_speed|default(5) }}</span>
+          </div>
+          <!-- Reverse rotation checkbox -->
+          <div class="check-row sub" style="margin-top:0" id="cursor-rotation-reverse-row">
+            <input type="checkbox" id="settings-cursor-rotation-reverse" {% if settings.cursor_rotation_reverse %}checked{% endif %} onchange="mgCursorRotationReverseChange(this.checked);autoSave()">
+            <label for="settings-cursor-rotation-reverse" style="margin:0"><i class="fas fa-exchange-alt"></i> {{ T("settings_cursor_rotation_reverse") }}</label>
+          </div>
+          <!-- Trail toggle -->
+          <div class="check-row" style="margin-top:.2rem">
+            <input type="checkbox" id="settings-cursor-shadow" {% if settings.cursor_shadow|default(True) %}checked{% endif %} onchange="mgCursorTrailChange(this.checked);autoSave()">
+            <label for="settings-cursor-shadow" style="margin:0"><i class="fas fa-share-alt"></i> {{ T("settings_cursor_shadow") }}</label>
+          </div>
+          <!-- Trail length (dimmed when trail off) -->
+          <div class="slider-row sub" id="cursor-shadow-length-row">
+            <label><i class="fas fa-arrows-alt-h"></i> {{ T("settings_cursor_shadow_length") }}</label>
+            <input type="range" id="settings-cursor-shadow-length" min="5" max="25" value="{{ settings.cursor_shadow_length|default(10) }}" oninput="mgCursorTrailLengthChange(this.value);this.parentElement.querySelector('.val').textContent=this.value" onchange="autoSave()">
+            <span class="val">{{ settings.cursor_shadow_length|default(10) }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<div class="toast-container" id="toast-container" style="position:fixed;top:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem">
+
+<svg id="cursor-dot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" style="display:none;position:fixed;pointer-events:none;z-index:99999;overflow:visible;transition:width .15s,height .15s">
+  <path id="cursor-shape-el" d="M 50,4 L 96,96 L 4,96 Z" fill="transparent" stroke="var(--primary)" stroke-width="6" stroke-linejoin="round"/>
+</svg>
+<div id="cursor-trail" style="display:none;position:fixed;pointer-events:none;z-index:99998;top:0;left:0"></div>
+
+<script>
+var _cursorSize={{ settings.cursor_size|default(24) }};
+var _cursorEnabled={{ 'true' if settings.cursor_enabled else 'false' }};
+var _cursorShape='{{ settings.cursor_shape|default("triangle") }}';
+var _cursorAngle={{ settings.cursor_angle|default(0) }};
+var _cursorRotation={{ 'true' if settings.cursor_rotation else 'false' }};
+var _cursorRotationReverse={{ 'true' if settings.cursor_rotation_reverse else 'false' }};
+var _cursorRotationSpeed={{ settings.cursor_rotation_speed|default(5) }};
+var _cursorTrail={{ 'true' if settings.cursor_shadow|default(True) else 'false' }};
+var _cursorTrailLength={{ settings.cursor_shadow_length|default(10) }};
+var _cursorSvg=null,_cursorShapeEl=null,_trailDots=[],_trailPos=[],_trailRAF=null,_trailLen=0,_lastMoveTime=0;
+
+function _shapePath(shape,inset){
+  var i=inset||4
+  if(shape==='circle'){
+    var r=48,m=50,k=0.551915
+    return 'M'+(m)+','+(50-r)+' C'+(m+r*k)+','+(50-r)+' '+(50+r)+','+(m-r*k)+' '+(50+r)+','+m+
+           ' C'+(50+r)+','+(m+r*k)+' '+(m+r*k)+','+(50+r)+' '+m+','+(50+r)+' C'+(m-r*k)+','+(50+r)+' '+(50-r)+','+(m+r*k)+' '+(50-r)+','+m+
+           ' C'+(50-r)+','+(m-r*k)+' '+(m-r*k)+','+(50-r)+' '+m+','+(50-r)+' Z'
+  }
+  if(shape==='square'){
+    var l=i,r2=100-i
+    return 'M'+l+','+i+' L'+r2+','+i+' L'+r2+','+r2+' L'+l+','+r2+' Z'
+  }
+  var r=50-i,h=r*0.866,v=r*0.5
+  return 'M50,'+(50-r)+' L'+(50+h)+','+(50+v)+' L'+(50-h)+','+(50+v)+' Z'
+}
+
+function _drawCursorShape(size,shape,fillColor,strokeColor){
+  var el=_cursorShapeEl;if(!el)return
+  var s=size||_cursorSize,inset=Math.max(3,s*0.045),sw=Math.max(2,s*0.07)
+  el.setAttribute('d',_shapePath(shape,inset))
+  el.setAttribute('stroke-width',sw*100/s)
+  el.setAttribute('stroke-linejoin','round')
+  if(strokeColor){el.setAttribute('stroke',strokeColor)}
+  if(fillColor!==undefined){el.setAttribute('fill',fillColor)}
+}
+
+function _ensureShapeEl(){
+  if(!_cursorSvg)return
+  _cursorShapeEl=document.getElementById('cursor-shape-el')
+  if(!_cursorShapeEl){
+    _cursorShapeEl=document.createElementNS('http://www.w3.org/2000/svg','path')
+    _cursorShapeEl.id='cursor-shape-el'
+    _cursorSvg.appendChild(_cursorShapeEl)
+  }
+}
+
+function _updateAngleStyle(){
+  if(!_cursorSvg)return
+  _cursorSvg.style.setProperty('--cursor-angle',_cursorAngle+'deg')
+  var s=document.getElementById('cursor-spin-style')
+  if(!s){s=document.createElement('style');s.id='cursor-spin-style';document.head.appendChild(s)}
+  var to=_cursorRotationReverse?(_cursorAngle-360):(_cursorAngle+360)
+  s.textContent='@keyframes cursor-spin{from{transform:translate(-50%,-50%) rotate('+_cursorAngle+'deg)}to{transform:translate(-50%,-50%) rotate('+to+'deg)}}'
+}
+
+function _updateSpeedStyle(){
+  if(!_cursorSvg)return
+  var dur=15*Math.pow(30,-(_cursorRotationSpeed-1)/19)
+  _cursorSvg.style.setProperty('--cursor-duration',dur+'s')
+}
+
+function _updateSpinning(){
+  if(!_cursorSvg)return
+  var shouldSpin=_cursorRotation&&_cursorShape!=='circle'
+  _cursorSvg.classList.toggle('spinning',shouldSpin)
+}
+
+function _rebuildTrail(len){
+  var trail=document.getElementById('cursor-trail')
+  if(!trail)return
+  while(trail.firstChild)trail.removeChild(trail.firstChild)
+  _trailDots=[]
+  _trailLen=len
+  if(_trailPos.length>len)_trailPos.length=len
+  for(var i=0;i<len;i++){
+    var d=document.createElement('div')
+    d.style.cssText='position:fixed;pointer-events:none;width:6px;height:6px;border-radius:50%;background:var(--primary)'
+    if(!_cursorTrail && i>0)d.style.display='none'
+    d._tIdx=i;trail.appendChild(d);_trailDots.push(d)
+  }
+}
+function _updateTrail(){
+  for(var i=0;i<_trailDots.length;i++)_trailDots[i].style.display=(_cursorTrail||i===0)?'':'none'
+}
+
+function mgCursorAngleChange(deg){
+  _cursorAngle=parseInt(deg)||0
+  _updateAngleStyle()
+}
+
+function _updateAngleRowDimmed(){
+  var row=document.getElementById('cursor-angle-row')
+  if(!row)return
+  var dim=_cursorShape==='circle'||_cursorRotation
+  row.classList.toggle('dimmed',dim)
+  var sl=document.getElementById('settings-cursor-angle')
+  if(sl)sl.disabled=dim
+}
+function _updateReverseRowDimmed(){
+  var row=document.getElementById('cursor-rotation-reverse-row')
+  if(!row)return
+  var dim=!_cursorRotation
+  row.classList.toggle('dimmed',dim)
+  var sl=document.getElementById('settings-cursor-rotation-reverse')
+  if(sl)sl.disabled=dim
+}
+function mgCursorRotationChange(checked){
+  _cursorRotation=checked
+  _updateSpinning()
+  var row=document.getElementById('cursor-speed-row')
+  if(row){row.classList.toggle('dimmed',!checked)}
+  var sl=document.getElementById('settings-cursor-rotation-speed')
+  if(sl){sl.disabled=!checked}
+  _updateAngleRowDimmed()
+  _updateReverseRowDimmed()
+}
+
+function mgCursorRotationReverseChange(checked){
+  _cursorRotationReverse=checked
+  _updateAngleStyle()
+}
+
+function mgCursorRotationSpeedChange(speed){
+  _cursorRotationSpeed=parseInt(speed)||5
+  _updateSpeedStyle()
+}
+
+function mgCursorTrailChange(checked){
+  _cursorTrail=checked
+  _updateTrail()
+  var row=document.getElementById('cursor-shadow-length-row')
+  if(row){row.classList.toggle('dimmed',!checked)}
+  var sl=document.getElementById('settings-cursor-shadow-length')
+  if(sl){sl.disabled=!checked}
+}
+
+function mgCursorTrailLengthChange(len){
+  _cursorTrailLength=parseInt(len)||10
+  _rebuildTrail(_cursorTrailLength)
+  if(_trailPos.length>_trailLen+1)_trailPos.length=_trailLen+1
+}
+
+function mgCursorShapeChange(shape){
+  _cursorShape=shape
+  _drawCursorShape(_cursorSize,shape,_cursorSvg&&_cursorSvg.style.display!=='none'?'transparent':'transparent')
+  _updateSpinning()
+  _updateAngleRowDimmed()
+  try{localStorage.setItem('mg_cursor_shape',shape)}catch(e){}
+}
+
+function mgCursorToggleDim(on){
+  var body=document.getElementById('cursor-settings-body')
+  if(body)body.classList.toggle('dimmed',!on)
+}
+
+function mgCursorPreview(v){
+  if(!_cursorSvg)return
+  var on=_cursorEnabled&&v>0
+  document.body.classList.toggle('cursor-none',on)
+  if(on){
+    _cursorSvg.style.display='block';_cursorSvg.style.width=v+'px';_cursorSvg.style.height=v+'px'
+    _drawCursorShape(v,_cursorShape,'transparent')
+    _updateAngleStyle();_updateSpeedStyle();_updateSpinning();_updateTrail()
+    var t=document.getElementById('cursor-trail')
+    if(t){t.style.display='block'}
+    if(!_trailRAF)_trailRAF=requestAnimationFrame(_trailLoop)
+  }else{
+    _cursorSvg.style.display='none'
+    var t=document.getElementById('cursor-trail')
+    if(t){t.style.display='none'}
+    if(_trailRAF){cancelAnimationFrame(_trailRAF);_trailRAF=null}
+    _trailPos=[]
+  }
+}
+
+function _trailLoop(){
+  if(!_cursorSvg||_cursorSvg.style.display==='none'){_trailRAF=requestAnimationFrame(_trailLoop);return}
+  var cx=parseFloat(_cursorSvg.style.left)||0
+  var cy=parseFloat(_cursorSvg.style.top)||0
+  if(_trailPos[0]){_trailPos[0].x=cx;_trailPos[0].y=cy}
+  var now=Date.now()
+  var still=_trailPos.length>1&&now-_lastMoveTime>80
+  for(var i=0;i<_trailDots.length;i++){
+    var dot=_trailDots[i];if(!dot)break
+    if(i===0){
+      dot.style.left=cx+'px';dot.style.top=cy+'px'
+      dot.style.opacity='1';dot.style.transform='translate(-50%,-50%)'
+      continue
+    }
+    if(!still)dot._tIdx=Math.min(i,_trailPos.length-1)
+    else if(dot._tIdx>0.001)dot._tIdx*=0.965
+    if(dot._tIdx<0.001)dot._tIdx=0
+    var maxIdx=Math.max(0,_trailPos.length-2)
+    var idx=Math.min(dot._tIdx,maxIdx)
+    var i0=Math.max(0,Math.floor(idx))
+    var i1=Math.min(i0+1,_trailPos.length-1)
+    var frac=idx-i0
+    var p0=_trailPos[i0],p1=_trailPos[i1]
+    var tx=p0?p0.x+(p1?(p1.x-p0.x)*frac:0):cx
+    var ty=p0?p0.y+(p1?(p1.y-p0.y)*frac:0):cy
+    dot.style.left=tx+'px';dot.style.top=ty+'px'
+    var dist=Math.sqrt((cx-tx)*(cx-tx)+(cy-ty)*(cy-ty))
+    var baseAlpha=Math.max(0,1-i/(_trailDots.length||1))
+    var distAlpha=dist<2?0:dist>15?1:dist/15
+    var alpha=Math.min(baseAlpha,distAlpha)
+    dot.style.opacity=alpha<0.01?'0':alpha
+    dot.style.transform='translate(-50%,-50%)'
+  }
+  _trailRAF=requestAnimationFrame(_trailLoop)
+}
+function _updateCursor(e){
+  if(!_cursorSvg||_cursorSvg.style.display==='none')return
+  _cursorSvg.style.left=e.clientX+'px';_cursorSvg.style.top=e.clientY+'px'
+  var isClickable=e.target&&e.target.closest&&(e.target.closest('button')||e.target.closest('a')||e.target.closest('input')||e.target.closest('select')||e.target.closest('.tab')||e.target.closest('.tgl-btn')||e.target.closest('.tab-preview-item')||e.target.closest('.info-tip')||e.target.closest('.btn')||e.target.closest('.btn-icon'))
+  _drawCursorShape(_cursorSize,_cursorShape,isClickable?'rgba(124,58,237,0.25)':'transparent',isClickable?'var(--accent)':'var(--primary)')
+  if(_trailLen<1)return
+  _trailPos.unshift({x:e.clientX,y:e.clientY})
+  if(_trailPos.length>_trailLen+1)_trailPos.length=_trailLen+1
+  _lastMoveTime=Date.now()
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  _cursorSvg=document.getElementById('cursor-dot')
+  _ensureShapeEl()
+  _rebuildTrail(_cursorTrailLength)
+  mgCursorRotationChange(_cursorRotation)
+  mgCursorTrailChange(_cursorTrail)
+  mgCursorShapeChange(_cursorShape)
+  mgCursorToggleDim(_cursorEnabled)
+  if(_cursorEnabled&&_cursorSize>0){
+    mgCursorPreview(_cursorSize)
+    document.addEventListener('mousemove',_updateCursor)
+    if(!_trailRAF)_trailRAF=requestAnimationFrame(_trailLoop)
+  }
+})
+
+// ─── i18n for JS ───────────────────────────────────────────────
+var _T = {
+  stop: "{{ T('stop')|e }}", listen: "{{ T('listen')|e }}", record_mic: "{{ T('record_mic')|e }}",
+  history_empty: "{{ T('history_empty')|e }}", history_confirm: "{{ T('history_confirm')|e }}",
+  toast_saved: "{{ T('toast_saved')|e }}", toast_done: "{{ T('toast_done')|e }}",
+  toast_error: "{{ T('toast_error')|e }}", toast_deleted: "{{ T('toast_deleted')|e }}",
+  toast_saved_param: "{{ T('toast_saved_param')|e }}",
+  processing: "{{ T('processing')|e }}", select_file: "{{ T('select_file')|e }}",
+  clear_all: "{{ T('clear_all')|e }}", genned: "{{ T('genned')|e }}",
+  gen_wait: "{{ T('gen_wait')|e }}", gen_stopping: "{{ T('gen_stopping')|e }}", gen_pairs: "{{ T('gen_pairs')|e }}", gen_error: "{{ T('gen_error')|e }}", gen_cancelled: "{{ T('gen_cancelled')|e }}",
+  drift: "{{ T('drift')|e }}", drift_prob: "{{ T('drift_prob')|e }}",
+  jitter: "{{ T('jitter')|e }}", jitter_prob: "{{ T('jitter_prob')|e }}",
+  bad: "{{ T('bad')|e }}", noise: "{{ T('noise')|e }}",
+  noise_prob: "{{ T('noise_prob')|e }}", duration: "{{ T('duration')|e }}",
+  split: "{{ T('split')|e }}",
+  preset_placeholder: "{{ T('preset_placeholder')|e }}",
+  preset_saved: "{{ T('preset_saved')|e }}",
+  preset_loaded: "{{ T('preset_loaded')|e }}",
+  preset_renamed: "{{ T('preset_renamed')|e }}",
+  preset_deleted: "{{ T('preset_deleted')|e }}",
+  preset_uploaded: "{{ T('preset_uploaded')|e }}",
+  preset_updated: "{{ T('preset_updated')|e }}",
+  preset_name: "{{ T('preset_name')|e }}",
+  preset_new_name: "{{ T('preset_new_name')|e }}",
+  preset_name_exists: "{{ T('preset_name_exists')|e }}",
+  preset_old_will_replace: "{{ T('preset_old_will_replace')|e }}",
+  preset_confirm_delete: "{{ T('preset_confirm_delete')|e }}",
+  preset_err_exists: "{{ T('preset_err_exists')|e }}",
+  toggle_on: "{{ T('toggle_on')|e }}",
+  toggle_off: "{{ T('toggle_off')|e }}",
+  midigen_key: "{{ T('midigen_key')|e }}",
+  midigen_octave: "{{ T('midigen_octave')|e }}",
+  midigen_scale: "{{ T('midigen_scale')|e }}",
+  midigen_bpm: "{{ T('midigen_bpm')|e }}",
+  midigen_bars: "{{ T('midigen_bars')|e }}",
+  midigen_tsig: "{{ T('midigen_tsig')|e }}",
+  midigen_presets: "{{ T('midigen_presets')|e }}",
+  midigen_genning: "{{ T('midigen_genning')|e }}",
+  midigen_done: "{{ T('midigen_done')|e }}",
+  midigen_saved_to_bank: "{{ T('midigen_saved_to_bank')|e }}",
+  midigen_batch_done: "{{ T('midigen_batch_done')|e }}",
+  midigen_empty: "{{ T('midigen_empty')|e }}",
+  midigen_seed_none: "{{ T('midigen_seed_none')|e }}", midigen_seed: "{{ T('midigen_seed')|e }}", midigen_seed_random: "{{ T('midigen_seed_random')|e }}",
+  midigen_genned: "{{ T('midigen_genned')|e }}",
+  midigen_bank_name: "{{ T('midigen_bank_name')|e }}",
+  confirm_delete_bank: "{{ T('confirm_delete_bank')|e }}",
+  bank_deleted: "{{ T('bank_deleted')|e }}",
+  nav_process: "{{ T('nav_process')|e }}",
+  nav_eval: "{{ T('nav_eval')|e }}",
+  nav_history: "{{ T('nav_history')|e }}",
+  nav_midigen: "{{ T('nav_midigen')|e }}",
+  nav_dataset: "{{ T('nav_dataset')|e }}",
+  nav_train: "{{ T('nav_train')|e }}",
+  nav_tests: "{{ T('nav_tests')|e }}",
+  nav_settings: "{{ T('nav_settings')|e }}",
+  tab_visibility: "{{ T('tab_visibility')|e }}",
+  tab_visibility_desc: "{{ T('tab_visibility_desc')|e }}",
+  settings_cursor_size: "{{ T('settings_cursor_size')|e }}",
+  settings_cursor_enable: "{{ T('settings_cursor_enable')|e }}",
+  settings_cursor_angle: "{{ T('settings_cursor_angle')|e }}",
+  settings_cursor_rotation: "{{ T('settings_cursor_rotation')|e }}",
+  settings_cursor_rotation_reverse: "{{ T('settings_cursor_rotation_reverse')|e }}",
+   settings_cursor_shadow: "{{ T('settings_cursor_shadow')|e }}",
+   settings_ableton_on: "{{ T('settings_ableton_on')|e }}",
+   settings_ableton_off: "{{ T('settings_ableton_off')|e }}",
+  cursor_shape_triangle: "{{ T('cursor_shape_triangle')|e }}",
+  cursor_shape_square: "{{ T('cursor_shape_square')|e }}",
+  cursor_shape_circle: "{{ T('cursor_shape_circle')|e }}",
+  test_running: "{{ T('test_running')|e }}",
+  test_exit_code: "{{ T('test_exit_code')|e }}",
+  test_ready: "{{ T('test_ready')|e }}",
+};
+function T(k){return _T[k]||k}
+var _defaultInst='{{ settings.default_instrument|default("sax") }}';
+// eval tab visibility now managed by localStorage tab_order
+
+// ─── Utilities ──────────────────────────────────────────────────
+function id(n){return document.getElementById(n)}
+function status(el, msg, cls){if(typeof el=='string')el=id(el);el.style.display='flex';el.className='status '+cls;el.innerHTML=msg}
+
+// ─── Toast ──────────────────────────────────────────────────────
+function toast(msg, cls){
+  var c=id('toast-container'),t=document.createElement('div')
+  t.className='toast '+(cls||'ok');t.textContent=msg;c.appendChild(t)
+  var sl=id('settings-toast'),sec=sl?parseInt(sl.value):6
+  setTimeout(function(){t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(function(){t.remove()},300)},sec*1000)
+}
+
+// ─── Tabs ───────────────────────────────────────────────────────
+function switchTab(tabName,suppressHash){
+  document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')})
+  document.querySelectorAll('.tab-content').forEach(function(x){x.classList.remove('active')})
+  var tabEl=document.querySelector('.tab[data-tab="'+tabName+'"]')
+  if(tabEl)tabEl.classList.add('active')
+  var tc=id('tab-'+tabName)
+  if(tc)tc.classList.add('active')
+  try{localStorage.setItem('active_tab',tabName)}catch(e){}
+  if(!suppressHash&&location.hash!=='#'+tabName)location.hash=tabName
+  if(tabName==='history')loadHistory()
+}
+window.addEventListener('hashchange',function(){
+  var tab=location.hash&&location.hash.slice(1)
+  if(tab&&document.querySelector('.tab[data-tab="'+tab+'"]'))switchTab(tab,true)
+})
+
+// ─── Language ───────────────────────────────────────────────────
+function setLang(l){fetch('/lang/'+l).then(function(){location.reload()})}
+
+// ─── Slider values ──────────────────────────────────────────────
+document.querySelectorAll('.slider-row input[type="range"]').forEach(function(s){
+  s.addEventListener('input',function(){s.parentElement.querySelector('.val').textContent=s.value})
+})
+
+// ─── MIDI render ──────────────────────────────────────────────
+var _instProg={piano:0,guitar:25,bass:33,violin:41,trumpet:56,sax:65,flute:73,vibraphone:14,synth_pad:118}
+function midiRenderUrl(file){var p=_instProg[_defaultInst]||66;return '/api/midi/render?file='+encodeURIComponent(file)+'&program='+p}
+
+// ─── Tab visibility init ──────────────────────────────────────
+document.addEventListener('DOMContentLoaded',function(){
+  _TAB_LABELS['process']=T('nav_process');
+  _TAB_LABELS['midigen']=T('nav_midigen');
+  _TAB_LABELS['dataset']=T('nav_dataset');
+  _TAB_LABELS['history']=T('nav_history');
+  _TAB_LABELS['train']=T('nav_train');
+  _TAB_LABELS['eval']=T('nav_eval');
+  _TAB_LABELS['tests']=T('nav_tests');
+  rebuildTabs();
+})
+</script>
+<script src="/static/tab-audio-to-midi.js"></script>
+<script src="/static/tab-history.js"></script>
+<script src="/static/tab-dataset.js"></script>
+<script src="/static/tab-train.js"></script>
+<script src="/static/tab-tests.js"></script>
+<script src="/static/tab-settings.js"></script>
+<script src="/static/tab-midigen.js"></script>
+{% endif %}
+</body>
+</html>

@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environments
+.env
+.venv
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Project - large binary files
+FluidR3_GM.sf2
+
+# Project - generated directories
+_tmp/
+_output/
+dataset/
+train_output/
+
+# Project - submodules
+DDSP-Timbre-Transfer/
+
+# Project - settings (user-specific)
+settings.json
+ratings.csv
