@@ -6,11 +6,12 @@
 
 ## Возможности
 
-- **🎤 Voice → MIDI** *(опция)* — запись с микрофона или загрузка WAV; CREPE + DDSP → чистый MIDI
+- **🎤 Аудио в MIDI** — запись с микрофона или загрузка WAV; CREPE + DDSP → чистый MIDI
 - **🎹 MIDI Generator** — 5 алгоритмов (Scale Walk, Chord, Markov, Contour, Combined), тональность/гамма/октава/BPM, массовая генерация
 - **📊 Dataset Generator** — MIDI → искажённые WAV-пары (clean + corrupt) для обучения моделей audio-to-audio
 - **📜 History** — просмотр, прослушивание, пианолла обработанных файлов
-- **🧪 Tests** — запуск 146 тестов прямо из UI
+- **🧪 Tests** — запуск 149 тестов прямо из UI
+- **🧠 Тренировка модели** *(в разработке)*
 - **🌐 i18n** — русский / английский (с авто-перезагрузкой переводов)
 
 ---
@@ -26,6 +27,13 @@
 ### Установка
 
 ```bash
+# Windows
+install_windows.bat
+
+# macOS
+bash install_macos.sh
+
+# Вручную:
 pip install -r requirements.txt
 pip install -r requirements-test.txt   # для тестов
 ```
@@ -33,14 +41,21 @@ pip install -r requirements-test.txt   # для тестов
 ### Запуск
 
 ```bash
-# GPU (по умолчанию)
+# Windows (GPU)
 start_web_ui_gui.bat
 
-# CPU
+# Windows (CPU)
 start_web_ui_cpu.bat
 
+# macOS (GPU)
+bash start_web_ui_gui.sh
+
+# macOS (CPU)
+bash start_web_ui_cpu.sh
+
 # Или напрямую:
-python main.py
+python main.py        # Windows
+python3 main.py       # macOS
 ```
 
 Открыть в браузере: **http://127.0.0.1:7890**
@@ -51,10 +66,8 @@ python main.py
 
 | Путь | Назначение |
 |------|-----------|
-| Путь | Назначение |
-|------|-----------|
 | `main.py` | FastAPI-сервер (порт 7890) |
-| `miskamo.py` | MiskamoEngine — CREPE → DDSP → MIDI |
+| `core/audio2midi.py` | MiskamoEngine — CREPE → DDSP → MIDI |
 | `core/config.py` | Настройки приложения |
 | `core/i18n.py` | Интернационализация |
 | `core/fluidsynth.py` | FluidSynth-рендеринг MIDI → WAV |
@@ -82,7 +95,7 @@ python main.py
 
 ```bash
 python -m pytest tests/ -v
-# 146 тестов, ~3 секунды
+# 149 тестов, ~3 секунды
 ```
 
 ---
