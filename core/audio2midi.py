@@ -15,7 +15,7 @@ import pretty_midi
 from omegaconf import OmegaConf
 from scipy.ndimage import median_filter
 
-ROOT = Path(__file__).parent / "DDSP-Timbre-Transfer"
+ROOT = Path(__file__).resolve().parent.parent / "DDSP-Timbre-Transfer"
 sys.path.insert(0, str(ROOT))
 from ddsp_model.model.autoencoder_wrapper import AutoEncoderWrapper
 
