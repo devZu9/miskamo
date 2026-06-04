@@ -69,7 +69,7 @@ python main.py         # напрямую
 │   ├── conftest.py          # Моки + patch_paths autouse
 │   └── test_*.py            # 14 файлов, 146 тестов
 │
-├── e2e/
+├── tests_e2e/
 │   ├── conftest.py          # E2E моки + uvicorn-сервер
 │   ├── test_cursor_e2e.py   # 30 тестов курсора
 │   └── test_midigen_tsig_e2e.py # 3 теста time signature
