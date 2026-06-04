@@ -185,11 +185,11 @@ Cancel via `_gen_cancel_flag` flag + dedicated endpoint.
 - `_midi_banks/` — на GitHub только пустая `generated/.gitkeep`; все банки (maestro, testbank и т.д.) — локально
 - `_corrupt_presets/` — на GitHub только `heavy.json`, `light.json`, `medium.json`; пользовательские и тестовые — локально
 - `_midi_gen_presets/` — полностью локально, на GitHub не попадает
-- `*.dll` — Windows-нативные библиотеки (`libfluidsynth*.dll`, `sndfile.dll`, `SDL3.dll`); не на GitHub, устанавливаются через `install.bat` или Homebrew на macOS
+- `*.dll` — Windows-нативные библиотеки (`libfluidsynth*.dll`, `sndfile.dll`, `SDL3.dll`); не на GitHub, устанавливаются через `install_windows.bat` или Homebrew на macOS
 
 ## Файлы установки и запуска
-- `install.bat` — Windows: pip install + создание папок
-- `install.sh` — macOS: Homebrew + pip install + создание папок
+- `install_windows.bat` — Windows: pip install + создание папок
+- `install_macos.sh` — macOS: Homebrew + pip install + создание папок
 - `start_web_ui_gui.bat` / `.sh` — запуск (GPU)
 - `start_web_ui_cpu.bat` / `.sh` — запуск (CPU, CUDA_VISIBLE_DEVICES=-1)
 - `.sh` файлы имеют `+x` (chmod) — исполняемые

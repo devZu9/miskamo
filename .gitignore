@@ -26,7 +26,7 @@ Thumbs.db
 # Project - large binary files
 FluidR3_GM.sf2
 
-# Windows native libs (pyfluidsynth deps) — install via install.bat or Homebrew on Mac
+# Windows native libs (pyfluidsynth deps) — install via install_windows.bat or Homebrew on Mac
 *.dll
 
 # Project - generated directories
