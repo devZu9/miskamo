@@ -1,6 +1,7 @@
 """MIDI helpers — truncation and piano roll rendering."""
 
 import io
+import warnings
 import pretty_midi
 import numpy as np
 import matplotlib
@@ -62,7 +63,7 @@ def _split_into_segments(notes, max_dur):
     return segments
 
 
-def _render_pianoroll(midi_path, pitch_low=None, pitch_high=None, total_bars=None, note_offset=0, highlight_even_bars=False):
+def _render_pianoroll(midi_path, pitch_low=None, pitch_high=None, total_bars=None, note_offset=0):
     """Generate piano roll PNG image from MIDI file (matplotlib + librosa)."""
     pm = pretty_midi.PrettyMIDI(str(midi_path))
     if note_offset:
@@ -77,7 +78,7 @@ def _render_pianoroll(midi_path, pitch_low=None, pitch_high=None, total_bars=Non
     start_pitch, end_pitch = pitch_low, pitch_high + 1
     roll = pm.get_piano_roll(fs=fs)[start_pitch:end_pitch]
 
-    # Add tiny gaps between consecutive same-pitch notes so they don't merge visually
+    # Add tiny gaps between consecutive same-pitch notes
     if pm.instruments:
         for instr in pm.instruments:
             notes = sorted(instr.notes, key=lambda n: (n.pitch, n.start))
@@ -93,7 +94,7 @@ def _render_pianoroll(midi_path, pitch_low=None, pitch_high=None, total_bars=Non
                             roll[row, max(0, mid_f - 1):min(roll.shape[1], mid_f + 1)] = 0
                 prev = n
 
-    # Compute timing before plotting (needed for grid)
+    # Compute timing for grid
     tempos = pm.get_tempo_changes()
     bpm = max(tempos[1][0] if len(tempos[1]) > 0 else 120, 1)
     beats_per_bar = pm.time_signature_changes[0].numerator if pm.time_signature_changes else 4
@@ -106,31 +107,25 @@ def _render_pianoroll(midi_path, pitch_low=None, pitch_high=None, total_bars=Non
         num_bars = int(total_sec / bar_sec) + 2
         bar_ticks = [i * bar_sec for i in range(num_bars) if i * bar_sec <= total_sec]
 
-    # Lighten background of even bars by adding low value to empty cells
-    if highlight_even_bars:
-        for i in range(1, len(bar_ticks) - 1, 2):
-            col_start = int(bar_ticks[i] * fs)
-            col_end = min(int(bar_ticks[i+1] * fs), roll.shape[1])
-            if col_start < roll.shape[1]:
-                mask = roll[:, col_start:col_end] == 0
-                roll[:, col_start:col_end][mask] = 3
-
     fig, ax = plt.subplots(figsize=(10, 4))
 
+    warnings.filterwarnings('ignore', message='Frequency axis exceeds Nyquist')
     img = librosa.display.specshow(
         roll, hop_length=1, sr=fs,
         x_axis='time', y_axis='cqt_note',
         fmin=pretty_midi.note_number_to_hz(start_pitch),
-        ax=ax, cmap='magma'
+        ax=ax, cmap='inferno'
     )
-    # Show all semitones on y-axis
+
+    # Y-axis: note labels without ticks
     __NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     tick_hz = [pretty_midi.note_number_to_hz(p) for p in range(start_pitch, end_pitch + 1)]
     tick_labels = [f"{__NOTE_NAMES[p%12]}{p//12-1}" for p in range(start_pitch, end_pitch + 1)]
     ax.set_yticks(tick_hz)
     ax.set_yticklabels(tick_labels, fontsize=7)
+    ax.tick_params(axis='y', length=0)
 
-    # Vertical grid: bars, half-bars, quarters
+    # Vertical grid: bars, half-bars, quarters (above notes)
     quarter_step = bar_sec / 4.0
     num_quarters = int(total_sec / quarter_step) + 2
     for qi in range(num_quarters):
@@ -144,9 +139,14 @@ def _render_pianoroll(midi_path, pitch_low=None, pitch_high=None, total_bars=Non
         else:
             ax.axvline(x, color='gray', linewidth=0.3, alpha=0.15, zorder=3)
 
-    # X-axis: show bars instead of seconds
+    # X-axis: bars
     ax.set_xticks(bar_ticks)
     ax.set_xticklabels([str(i + 1) for i in range(len(bar_ticks))], fontsize=8)
+
+    # Highlight even bars with subtle overlay
+    for i in range(1, len(bar_ticks) - 1, 2):
+        ax.axvspan(bar_ticks[i], bar_ticks[i+1], facecolor='white', alpha=0.04, zorder=10)
+
     fig.colorbar(img, ax=ax, format='%+2.0f dB')
     ax.set_ylabel('')
     ax.set_xlabel('Bar')

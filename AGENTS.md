@@ -1,8 +1,5 @@
 # Miskam'o — Personal Music Assistant
 
-## Communication
-Пользователь общается только по-русски. Все ответы и комментарии должны быть на русском языке.
-
 ## Overview
 Local personal music assistant. Includes a dataset generator (MIDI → distorted WAV pairs), a MIDI melody generator with multiple algorithms, and — as one of the options — voice-to-MIDI conversion using DDSP timbre transfer + pitch correction.
 
@@ -26,6 +23,19 @@ python -m pytest tests/ -v
 
 # Run specific test file
 python -m pytest tests/test_midi_gen_algorithm.py -v
+
+## Test commands (run only on request)
+# %test                     — run all tests (python -m pytest tests/ -v)
+# %test <context>            — run specific test(s) matching context
+#   Examples:
+#     %test midi utils       → python -m pytest tests/test_midi_utils.py -v
+#     %test структуры проекта → python -m pytest tests/test_project_structure.py -v
+#     %test midigen          → python -m pytest tests/test_api_midigen.py tests/test_midi_gen_algorithm.py tests/test_api_midigen_presets.py -v
+#     %test i18n             → python -m pytest tests/test_i18n.py tests/test_template.py -v
+#
+# %test new <context>        — create new tests for the given feature
+#   Examples:
+#     %test new нового генератора  → create tests/test_new_generator.py
 ```
 
 ## Port
