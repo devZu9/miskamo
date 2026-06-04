@@ -38,3 +38,7 @@ DDSP-Timbre-Transfer/
 # Project - settings (user-specific)
 settings.json
 ratings.csv
+
+# MIDI banks — keep only generated/ on GitHub
+_midi_banks/*
+!_midi_banks/generated/
